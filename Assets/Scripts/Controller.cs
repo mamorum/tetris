@@ -105,7 +105,22 @@ public class Controller : MonoBehaviour {
     return ret;
   }
   void DeleteLine() {
-
+    for (int y = 1; y < 23; y++) {
+      bool flag = true;
+      for (int x = 1; x <= 10; x++) {
+        if (board[x, y] == 0) {
+          flag = false;
+        }
+      }
+      if (flag) {
+        for (int j = y; j < 23; j++) {
+          for (int i = 1; i <= 10; i++) {
+            board[i, j] = board[i, j + 1];
+          }
+        }
+        y--;
+      }
+    }
   }
   void BlockDown() {
     DeleteBlock(current);
