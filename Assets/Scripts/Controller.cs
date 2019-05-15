@@ -13,18 +13,18 @@ public class Controller : MonoBehaviour {
     new Block(2, Pos(0, -1), Pos(1, 0), Pos(1, 1)), // Key1
     new Block(2, Pos(0, -1), Pos(-1, 0), Pos(-1, 1)), // Key2
     new Block(1, Pos(0, 1), Pos(1, 0), Pos(1, 1)), // Square
-    new Block(4, Pos(0, -1), Pos(1, 0), Pos(-1, 0)), // T
+    new Block(4, Pos(0, -1), Pos(1, 0), Pos(-1, 0)) // T
   };
   Status current = new Status();
 
   bool PutBlock(Status s, bool action) {
     if (board[s.x, s.y] != 0) return false;
     if (action) board[s.x, s.y] = s.type;
-    for (int i=0; i<3; i++) {
+    for (int i = 0; i < 3; i++) {
       int dx = block[s.type].p[i].x;
       int dy = block[s.type].p[i].y;
       int r = s.rotate % block[s.type].rotate;
-      for (int j=0; j<r; j++) {
+      for (int j = 0; j < r; j++) {
         int nx, ny;
         nx = dx; ny = dy; dx = ny; dy = -nx;
       }
@@ -39,7 +39,17 @@ public class Controller : MonoBehaviour {
     return true;
   }
   void DeleteBlock(Status s) {
-    
+    board[s.x, s.y] = 0;
+    for (int i = 0; i < 3; i++) {
+      int dx = block[s.type].p[i].x;
+      int dy = block[s.type].p[i].y;
+      int r = s.rotate % block[s.type].rotate;
+      for (int j = 0; j < r; j++) {
+        int nx, ny;
+        nx = dx; ny = dy; dx = ny; dy = -nx;
+      }
+      board[s.x + dx, s.y + dy] = 0;
+    }
   }
 
   void Start() {
@@ -60,6 +70,7 @@ public class Controller : MonoBehaviour {
     current.rotate = Random.Range(0, 5); // 0 ～ 4
     PutBlock(current, false);
   }
+
   readonly int inLeft = 1, inRight = 2, inJump = 3;
   int preInput = 0;
   bool ProcessInput() {
@@ -93,9 +104,37 @@ public class Controller : MonoBehaviour {
     }
     return ret;
   }
+  void DeleteLine() {
 
+  }
+  void BlockDown() {
+    DeleteBlock(current);
+    current.y--;
+    if (!PutBlock(current, false)) {
+      current.y++;
+      PutBlock(current, false);
+      DeleteLine();
+      current.x = 5;
+      current.y = 21;
+      current.type = Random.Range(1, 8); // 1 ～ 7
+      current.rotate = Random.Range(0, 5); // 0 ～ 4
+      if (!PutBlock(current, false)) {
+        // game over
+      }
+    }
+  }
+
+  int w = 0;
   void Update() {
-    ProcessInput();
+    if (w % 2 == 0) {
+      if (ProcessInput()) {
+        w = 0;
+      }
+    }
+    if (w % 5 == 0) {
+      BlockDown();
+    }
+    w++;
   }
 }
 
