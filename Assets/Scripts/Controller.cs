@@ -67,27 +67,23 @@ public class Controller : MonoBehaviour {
     Status n = current.Copy();
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
       if (preInput != inLeft) {
-        Debug.Log("Input: Left");
         preInput = inLeft;
         n.x--;
       }
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput != inRight) {
-        Debug.Log("Input: Right");
         preInput = inRight;
         n.x++;
       }
     } else if (Input.GetButtonDown("Jump")) { // Space or Y
       if (preInput != inJump) {
-        Debug.Log("Input: Jump");
         preInput = inJump;
         n.rotate++;
       }
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
-      Debug.Log("Input: Down");
-      n.x++;
+      n.y--;
       ret = true;
-    } else {
+    } else { // None
       preInput = 0;
     }
     if (n.x != current.x || n.y != current.y || n.rotate != current.rotate) {
