@@ -38,6 +38,9 @@ public class Controller : MonoBehaviour {
     if (!action) PutBlock(s, true);
     return true;
   }
+  bool DeleteBlock(Status s) {
+    return true;
+  }
 
   void Start() {
     //-> Init board
@@ -57,9 +60,46 @@ public class Controller : MonoBehaviour {
     current.rotate = Random.Range(0, 5); // 0 ～ 4
     PutBlock(current, false);
   }
+  readonly int inLeft = 1, inRight = 2, inJump = 3;
+  int preInput = 0;
+  bool ProcessInput() {
+    bool ret = false;
+    Status n = current.Copy();
+    if (Input.GetAxisRaw("Horizontal") == -1) { // Left
+      if (preInput != inLeft) {
+        Debug.Log("Input: Left");
+        preInput = inLeft;
+        n.x--;
+      }
+    } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
+      if (preInput != inRight) {
+        Debug.Log("Input: Right");
+        preInput = inRight;
+        n.x++;
+      }
+    } else if (Input.GetButtonDown("Jump")) { // Space or Y
+      if (preInput != inJump) {
+        Debug.Log("Input: Jump");
+        preInput = inJump;
+        n.rotate++;
+      }
+    } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
+      Debug.Log("Input: Down");
+      n.x++;
+      ret = true;
+    } else {
+      preInput = 0;
+    }
+    if (n.x != current.x || n.y != current.y || n.rotate != current.rotate) {
+      DeleteBlock(current);
+      if (PutBlock(n, false)) current = n;
+      else PutBlock(current, false);
+    }
+    return ret;
+  }
 
   void Update() {
-
+    ProcessInput();
   }
 }
 
