@@ -38,8 +38,8 @@ public class Controller : MonoBehaviour {
     if (!action) PutBlock(s, true);
     return true;
   }
-  bool DeleteBlock(Status s) {
-    return true;
+  void DeleteBlock(Status s) {
+    
   }
 
   void Start() {
