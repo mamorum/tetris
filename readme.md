@@ -1,8 +1,8 @@
 ## Version
-### master
+### tetris2
 developing
 
-### v0.0.1
+### tetris1
 以下のサイトと同じ実装
 - https://github.com/DQNEO/CppTetris/blob/master/tetris.cpp
 - http://itouhiro.hatenablog.com/entry/20121119/tetris

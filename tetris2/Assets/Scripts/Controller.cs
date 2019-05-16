@@ -72,6 +72,29 @@ public class Controller : MonoBehaviour {
     PutBlock(current, false);
   }
 
+  Cells[] cells = new Cells[] {
+    new Line(), new Square(), new L1()
+  };
+
+  void HideCurrent() {
+    int x = current.x;
+    int y = current.y;
+    board[x, y] = 0;
+    Cell[] c = cells[current.type].Get(current.rotate);
+    int cx, cy;
+    for (int i = 0; i < c.Length; i++) {
+      cx = c[i].x; cy = c[i].y;
+      board[x + cx, y + cy] = 0;
+    }
+  }
+  void ShowCurrent() {
+
+  }
+  bool CheckHorizontal(int x) {
+    HideCurrent();
+    return true;
+  }
+
   readonly int inLeft = 1, inRight = 2, inJump = 3;
   int preInput = 0;
   bool ProcessInput() {
@@ -81,6 +104,7 @@ public class Controller : MonoBehaviour {
       if (preInput != inLeft) {
         preInput = inLeft;
         n.x--;
+        CheckHorizontal(-1);
       }
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput != inRight) {
