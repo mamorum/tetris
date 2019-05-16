@@ -40,22 +40,8 @@ public class Controller : MonoBehaviour {
     if (!action) PutBlock(s, true);
     return true;
   }
-  void DeleteBlock(Status s) {
-    board[s.x, s.y] = 0;
-    for (int i = 0; i < 3; i++) {
-      int dx = block[s.type].p[i].x;
-      int dy = block[s.type].p[i].y;
-      int r = s.rotate % block[s.type].rotate;
-      for (int j = 0; j < r; j++) {
-        int nx, ny;
-        nx = dx; ny = dy; dx = ny; dy = -nx;
-      }
-      board[s.x + dx, s.y + dy] = 0;
-    }
-  }
 
   void Start() {
-    //-> Init FPS
     //-> Init board
     for (int x=0; x<12; x++) {
       for (int y=0; y<25; y++) {
@@ -119,6 +105,35 @@ public class Controller : MonoBehaviour {
     }
     return ret;
   }
+  void BlockDown() {
+    DeleteBlock(current);
+    current.y--;
+    if (!PutBlock(current, false)) {
+      current.y++;
+      PutBlock(current, false);
+      DeleteLine();
+      current.x = 5;
+      current.y = 21;
+      current.type = Random.Range(1, 8); // 1 ～ 7
+      current.rotate = Random.Range(0, 5); // 0 ～ 4
+      if (!PutBlock(current, false)) {
+        // game over
+      }
+    }
+  }
+  void DeleteBlock(Status s) {
+    board[s.x, s.y] = 0;
+    for (int i = 0; i < 3; i++) {
+      int dx = block[s.type].p[i].x;
+      int dy = block[s.type].p[i].y;
+      int r = s.rotate % block[s.type].rotate;
+      for (int j = 0; j < r; j++) {
+        int nx, ny;
+        nx = dx; ny = dy; dx = ny; dy = -nx;
+      }
+      board[s.x + dx, s.y + dy] = 0;
+    }
+  }
   void DeleteLine() {
     for (int y = 1; y < 23; y++) {
       bool flag = true;
@@ -134,22 +149,6 @@ public class Controller : MonoBehaviour {
           }
         }
         y--;
-      }
-    }
-  }
-  void BlockDown() {
-    DeleteBlock(current);
-    current.y--;
-    if (!PutBlock(current, false)) {
-      current.y++;
-      PutBlock(current, false);
-      DeleteLine();
-      current.x = 5;
-      current.y = 21;
-      current.type = Random.Range(1, 8); // 1 ～ 7
-      current.rotate = Random.Range(0, 5); // 0 ～ 4
-      if (!PutBlock(current, false)) {
-        // game over
       }
     }
   }
