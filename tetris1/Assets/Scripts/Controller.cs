@@ -156,11 +156,6 @@ public class Controller : MonoBehaviour {
   int w = 0;
   void Update() {
     ProcessInput();
-    //if (w % 2 == 0) {
-    //  if (ProcessInput()) {
-    //    w = 0;
-    //  }
-    //}
     if (w == 60) {
       BlockDown();
       w = 0;
