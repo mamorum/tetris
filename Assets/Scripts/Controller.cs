@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
+  public GameObject prfbBlock;
   static Position Pos(int x, int y) { return new Position(x, y); }
   int[,] board = new int[12, 25];
+  SpriteRenderer[,] srBlock = new SpriteRenderer[12, 25];
   Block[] block = {
     new Block(1, Pos(0, 0), Pos(0, 0), Pos(0, 0)), // null
     new Block(2, Pos(0, -1), Pos(0, 1), Pos(0, 2)), // tetris
@@ -53,6 +55,7 @@ public class Controller : MonoBehaviour {
   }
 
   void Start() {
+    //-> Init FPS
     //-> Init board
     for (int x=0; x<12; x++) {
       for (int y=0; y<25; y++) {
@@ -61,6 +64,18 @@ public class Controller : MonoBehaviour {
         } else {
           board[x, y] = 0;
         }
+      }
+    }
+    //-> Init Sprite
+    Vector2 pos; float nx, ny;
+    for (int x = 0; x < 12; x++) {
+      nx = -1.955f + (x * 0.355f);
+      for (int y = 0; y < 25; y++) {
+        ny = -4.5f + (y * 0.355f);
+        srBlock[x, y] = Instantiate(prfbBlock).GetComponent<SpriteRenderer>();
+        pos = srBlock[x, y].transform.position;
+        pos.x = nx; pos.y = ny;
+        srBlock[x, y].transform.position = pos;
       }
     }
     //-> Init Current
@@ -141,15 +156,34 @@ public class Controller : MonoBehaviour {
 
   int w = 0;
   void Update() {
-    if (w % 2 == 0) {
-      if (ProcessInput()) {
-        w = 0;
-      }
-    }
-    if (w % 5 == 0) {
+    ProcessInput();
+    //if (w % 2 == 0) {
+    //  if (ProcessInput()) {
+    //    w = 0;
+    //  }
+    //}
+    if (w == 60) {
       BlockDown();
+      w = 0;
     }
     w++;
+    Render();
+  }
+  Color c;
+  void Render() {
+    for (int x = 0; x < 12; x++) {
+      for (int y = 0; y < 25; y++) {
+        if (board[x, y] > 0) {
+          c = srBlock[x, y].color;
+          c.a = 1f; c.g = 1f; c.b = 1f;
+          srBlock[x, y].color = c;
+        } else {
+          c = srBlock[x, y].color;
+          c.a = 0f; c.g = 0f; c.b = 0f;
+          srBlock[x, y].color = c;
+        }
+      }
+    }
   }
 }
 
