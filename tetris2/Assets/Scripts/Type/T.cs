@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-internal class Now {
-  internal int x, y, rotate;
-  internal Type type;
+public class T {
+
 }
