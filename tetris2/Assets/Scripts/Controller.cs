@@ -7,7 +7,7 @@ public class Controller : MonoBehaviour {
   SpriteRenderer[,] blocks = new SpriteRenderer[12, 25];
   int[,] board = new int[12, 25];
   Type[] types = new Type[] {
-    new I(), new O(), new J()
+    new I(), new O(), new J(), new T()
   };
   Now n = new Now();
   void Next() {
@@ -15,7 +15,7 @@ public class Controller : MonoBehaviour {
     n.y = 21;
     //now.type = Random.Range(1, 8); // 1 ～ 7
     //now.rotate = Random.Range(0, 5); // 0 ～ 4
-    n.type = types[Random.Range(0, 3)]; // 1 ～ 2
+    n.type = types[Random.Range(0, 4)]; // 1 ～ 3
     n.rotate = 0;
     Show();
   }
