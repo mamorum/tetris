@@ -10,7 +10,7 @@ public class Controller : MonoBehaviour {
     new I(), new O(), new J()
   };
   Now now = new Now();
-  void ShowNext() {
+  void Next() {
     now.x = 5;
     now.y = 21;
     //now.type = Random.Range(1, 8); // 1 ～ 7
@@ -48,7 +48,7 @@ public class Controller : MonoBehaviour {
         blocks[x * 11, y].color = c;
       }
     }
-    ShowNext();
+    Next();
     Render();
   }
   void Show(Now s) {
@@ -83,6 +83,7 @@ public class Controller : MonoBehaviour {
   }
   bool moved;
   void Move(Now s, int x, int y) {
+    Hide(s);
     int nx = s.x + x;
     int ny = s.y + y;
     if (IsEmpty(s, nx, ny)) {
@@ -92,6 +93,7 @@ public class Controller : MonoBehaviour {
     } else {
       moved = false;
     }
+    Show(s);
   }
 
   readonly int inLeft = 1, inRight = 2, inJump = 3;
@@ -100,15 +102,11 @@ public class Controller : MonoBehaviour {
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
       if (preInput == inLeft) return;
       preInput = inLeft;
-      Hide(now);
       Move(now, -1, 0);
-      Show(now);
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput == inRight) return;
       preInput = inRight;
-      Hide(now);
       Move(now, 1, 0);
-      Show(now);
     } else if (Input.GetButtonDown("Jump")) { // Space or Y
       if (preInput == inJump) return;
       preInput = inJump;
@@ -120,12 +118,11 @@ public class Controller : MonoBehaviour {
     }
   }
   void Down() {
-    Hide(now);
     Move(now, 0, -1);
-    Show(now);
+    //-> ブロック落下中
     if (moved) return;
-    //-> Fix Block
-    ShowNext();
+    //-> ブロック落下済
+    Next();
     // TODO: 行の削除
     // TODO: GameOver判定
   }
