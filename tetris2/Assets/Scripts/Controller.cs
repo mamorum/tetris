@@ -10,13 +10,14 @@ public class Controller : MonoBehaviour {
     null, new Line(), new Square(), new L1()
   };
   Status now = new Status();
-  void ResetNow() {
+  void ShowNext() {
     now.x = 5;
     now.y = 21;
     //now.type = Random.Range(1, 8); // 1 ～ 7
     //now.rotate = Random.Range(0, 5); // 0 ～ 4
     now.type = Random.Range(1, 4); // 1 ～ 3
     now.rotate = 0;
+    Show(now);
   }
   void Start() {
     //-> Init board
@@ -38,8 +39,7 @@ public class Controller : MonoBehaviour {
         srBlock[x, y].transform.position = pos;
       }
     }
-    ResetNow();
-    Show(now);
+    ShowNext();
     Render();
     //PutBlock(current, false);
   }
@@ -54,9 +54,7 @@ public class Controller : MonoBehaviour {
       board[s.x + cx, s.y + cy] = 0;
     }
   }
-  void Show(Status s) { Show(s, 0, 0);  }
-  void Show(Status s, int x, int y) {
-    s.x += x; s.y += y;
+  void Show(Status s) {
     board[s.x, s.y] = s.type;
     Cell[] c = cells[s.type].Get(s.rotate);
     int cx, cy;
@@ -65,7 +63,10 @@ public class Controller : MonoBehaviour {
       board[s.x + cx, s.y + cy] = s.type;
     }
   }
-  bool Check(Status s, int x, int y) {
+  void Move(Status s, int x, int y) {
+    s.x += x; s.y += y;
+  }
+  bool IsEmpty(Status s, int x, int y) {
     int nx = s.x + x;
     int ny = s.y + y;
     if (board[nx, ny] != 0) return false;
@@ -89,44 +90,47 @@ public class Controller : MonoBehaviour {
       if (preInput == inLeft) return false;
       preInput = inLeft;
       Hide(now);
-      if (Check(now, -1, 0)) Show(now, -1, 0);
-      else Show(now);
+      if (IsEmpty(now, -1, 0)) Move(now, -1, 0);
+      Show(now);
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput == inRight) return false;
       preInput = inRight;
       Hide(now);
-      if (Check(now, 1, 0)) Show(now, 1, 0);
+      if (IsEmpty(now, 1, 0)) Move(now, 1, 0);
       Show(now);
     } else if (Input.GetButtonDown("Jump")) { // Space or Y
-      if (preInput != inJump) {
-        preInput = inJump;
-        n.rotate++;
-      }
+      if (preInput == inJump) return false;
+      preInput = inJump;
+      n.rotate++;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
-      n.y--;
-      ret = true;
+      fWait -= wait / 2;
     } else { // None
       preInput = 0;
-    }
-    if (n.x != now.x || n.y != now.y || n.rotate != now.rotate) {
-      //DeleteBlock(current);
-      //if (PutBlock(n, false)) current = n;
-      //else PutBlock(current, false);
     }
     return ret;
   }
   void Down() {
-
+    Hide(now);
+    if (IsEmpty(now, 0, -1)) {
+      Move(now, 0, -1);
+      Show(now);
+    } else {
+      Show(now);
+      ShowNext();
+    }
+    // TODO: 行の削除
+    // TODO: GameOver判定
   }
 
-  int w = 0;
+  readonly int wait = 60;
+  int fWait = 0;
   void Update() {
     ProcessInput();
-    if (w == 60) {
+    if (fWait < 0) {
       Down();
-      w = 0;
+      fWait = wait;
     }
-    w++;
+    fWait--;
     Render();
   }
   Color c;
