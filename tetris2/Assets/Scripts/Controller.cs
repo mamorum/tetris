@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour {
     //-> Init board
     for (int x=0; x<12; x++) {
       for (int y=0; y<25; y++) {
-        if (x==0 || x==11 || y==0) board[x, y] = 1;
+        if (x==0 || x==11 || y==0) board[x, y] = 9;
         else board[x, y] = 0;
       }
     }
@@ -126,24 +126,28 @@ public class Controller : MonoBehaviour {
   int fWait = 0;
   void Update() {
     ProcessInput();
-    if (fWait < 0) {
+    fWait--;
+    if (fWait <= 0) {
       Down();
       fWait = wait;
     }
-    fWait--;
     Render();
   }
   Color c;
   void Render() {
     for (int x = 0; x < 12; x++) {
       for (int y = 0; y < 25; y++) {
-        if (board[x, y] > 0) {
+        if (board[x, y] == 9) {
           c = srBlock[x, y].color;
-          c.a = 1f; c.g = 1f; c.b = 1f;
+          c.r = 1f; c.g = 1f; c.b = 1f;
+          srBlock[x, y].color = c;
+        } else if (board[x, y] > 0) {
+          c = srBlock[x, y].color;
+          c.r = 0.65f; c.g = 0.65f; c.b = 0.65f;
           srBlock[x, y].color = c;
         } else {
           c = srBlock[x, y].color;
-          c.a = 0f; c.g = 0f; c.b = 0f;
+          c.r = 0f; c.g = 0f; c.b = 0f;
           srBlock[x, y].color = c;
         }
       }
