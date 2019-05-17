@@ -9,15 +9,15 @@ public class Controller : MonoBehaviour {
   Type[] types = new Type[] {
     new I(), new O(), new J()
   };
-  Now now = new Now();
+  Now n = new Now();
   void Next() {
-    now.x = 5;
-    now.y = 21;
+    n.x = 5;
+    n.y = 21;
     //now.type = Random.Range(1, 8); // 1 ～ 7
     //now.rotate = Random.Range(0, 5); // 0 ～ 4
-    now.type = types[Random.Range(0, 3)]; // 1 ～ 2
-    now.rotate = 0;
-    Show(now);
+    n.type = types[Random.Range(0, 3)]; // 1 ～ 2
+    n.rotate = 0;
+    Show();
   }
   void Start() {
     //-> Init board
@@ -51,27 +51,27 @@ public class Controller : MonoBehaviour {
     Next();
     Render();
   }
-  void Show(Now s) {
-    board[s.x, s.y] = s.type.Id();
-    Block[] b = s.type.Blocks(s.rotate);
+  void Show() {
+    board[n.x, n.y] = n.type.Id();
+    Block[] b = n.type.Blocks(n.rotate);
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
-      board[s.x + cx, s.y + cy] = s.type.Id();
+      board[n.x + cx, n.y + cy] = n.type.Id();
     }
   }
-  void Hide(Now s) {
-    board[s.x, s.y] = Type.empty;
-    Block[] b = s.type.Blocks(s.rotate);
+  void Hide() {
+    board[n.x, n.y] = Type.empty;
+    Block[] b = n.type.Blocks(n.rotate);
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
-      board[s.x + cx, s.y + cy] = Type.empty;
+      board[n.x + cx, n.y + cy] = Type.empty;
     }
   }
-  bool IsEmpty(Now s, int x, int y) {
+  bool IsEmpty(int x, int y, int rotate) {
     if (board[x, y] != Type.empty) return false;
-    Block[] b = s.type.Blocks(s.rotate);
+    Block[] b = n.type.Blocks(rotate);
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
@@ -82,18 +82,27 @@ public class Controller : MonoBehaviour {
     return true;
   }
   bool moved;
-  void Move(Now s, int x, int y) {
-    Hide(s);
-    int nx = s.x + x;
-    int ny = s.y + y;
-    if (IsEmpty(s, nx, ny)) {
+  void Move(int x, int y) {
+    Hide();
+    int nx = n.x + x;
+    int ny = n.y + y;
+    if (IsEmpty(nx, ny, n.rotate)) {
       moved = true;
-      s.x = nx;
-      s.y = ny;
+      n.x = nx;
+      n.y = ny;
     } else {
       moved = false;
     }
-    Show(s);
+    Show();
+  }
+
+  void Rotate() {
+    Hide();
+    int r = n.type.Rotate(n.rotate);
+    if (IsEmpty(n.x, n.y, r)) {
+      n.rotate = r;
+    }
+    Show();
   }
 
   readonly int inLeft = 1, inRight = 2, inJump = 3;
@@ -102,15 +111,15 @@ public class Controller : MonoBehaviour {
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
       if (preInput == inLeft) return;
       preInput = inLeft;
-      Move(now, -1, 0);
+      Move(-1, 0);
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput == inRight) return;
       preInput = inRight;
-      Move(now, 1, 0);
+      Move(1, 0);
     } else if (Input.GetButtonDown("Jump")) { // Space or Y
       if (preInput == inJump) return;
       preInput = inJump;
-      //n.rotate++;
+      Rotate();
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       fWait -= wait / 2;
     } else { // None
@@ -118,13 +127,31 @@ public class Controller : MonoBehaviour {
     }
   }
   void Down() {
-    Move(now, 0, -1);
+    Move(0, -1);
     //-> ブロック落下中
     if (moved) return;
     //-> ブロック落下済
+    DeleteLine();
     Next();
-    // TODO: 行の削除
     // TODO: GameOver判定
+  }
+  void DeleteLine() {
+    for (int y = 1; y < 23; y++) {
+      bool flag = true;
+      for (int x = 1; x <= 10; x++) {
+        if (board[x, y] == 0) {
+          flag = false;
+        }
+      }
+      if (flag) {
+        for (int j = y; j < 23; j++) {
+          for (int i = 1; i <= 10; i++) {
+            board[i, j] = board[i, j + 1];
+          }
+        }
+        y--;
+      }
+    }
   }
 
   readonly int wait = 60;

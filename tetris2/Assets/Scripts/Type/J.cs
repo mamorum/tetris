@@ -23,6 +23,6 @@ public class J : Type {
   }
   internal override int Rotate(int now) {
     if (now == 3) return 0;
-    else return now++;
+    else return now + 1;
   }
 }
