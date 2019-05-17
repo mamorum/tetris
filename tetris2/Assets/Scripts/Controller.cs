@@ -9,16 +9,7 @@ public class Controller : MonoBehaviour {
   Cells[] cells = new Cells[] {
     null, new Line(), new Square(), new L1()
   };
-  Status now = new Status();
-  void ShowNext() {
-    now.x = 5;
-    now.y = 21;
-    //now.type = Random.Range(1, 8); // 1 ～ 7
-    //now.rotate = Random.Range(0, 5); // 0 ～ 4
-    now.type = Random.Range(1, 4); // 1 ～ 3
-    now.rotate = 0;
-    Show(now);
-  }
+  Now now = new Now();
   void Start() {
     //-> Init board
     for (int x=0; x<12; x++) {
@@ -39,22 +30,27 @@ public class Controller : MonoBehaviour {
         srBlock[x, y].transform.position = pos;
       }
     }
+    //-> Hide Upper Wall
+    for (int x = 0; x < 2; x++) {
+      for (int y = 21; y < 25; y++) {
+        c = srBlock[x * 11, y].color;
+        c.r = 0f; c.g = 0f; c.b = 0f;
+        srBlock[x * 11, y].color = c;
+      }
+    }
     ShowNext();
     Render();
-    //PutBlock(current, false);
   }
-
-
-  void Hide(Status s) {
-    board[s.x, s.y] = 0;
-    Cell[] c = cells[s.type].Get(s.rotate);
-    int cx, cy;
-    for (int i = 0; i < c.Length; i++) {
-      cx = c[i].x; cy = c[i].y;
-      board[s.x + cx, s.y + cy] = 0;
-    }
+  void ShowNext() {
+    now.x = 5;
+    now.y = 21;
+    //now.type = Random.Range(1, 8); // 1 ～ 7
+    //now.rotate = Random.Range(0, 5); // 0 ～ 4
+    now.type = Random.Range(1, 4); // 1 ～ 3
+    now.rotate = 0;
+    Show(now);
   }
-  void Show(Status s) {
+  void Show(Now s) {
     board[s.x, s.y] = s.type;
     Cell[] c = cells[s.type].Get(s.rotate);
     int cx, cy;
@@ -63,10 +59,19 @@ public class Controller : MonoBehaviour {
       board[s.x + cx, s.y + cy] = s.type;
     }
   }
-  void Move(Status s, int x, int y) {
+  void Hide(Now s) {
+    board[s.x, s.y] = 0;
+    Cell[] c = cells[s.type].Get(s.rotate);
+    int cx, cy;
+    for (int i = 0; i < c.Length; i++) {
+      cx = c[i].x; cy = c[i].y;
+      board[s.x + cx, s.y + cy] = 0;
+    }
+  }
+  void Move(Now s, int x, int y) {
     s.x += x; s.y += y;
   }
-  bool IsEmpty(Status s, int x, int y) {
+  bool IsEmpty(Now s, int x, int y) {
     int nx = s.x + x;
     int ny = s.y + y;
     if (board[nx, ny] != 0) return false;
@@ -83,31 +88,28 @@ public class Controller : MonoBehaviour {
 
   readonly int inLeft = 1, inRight = 2, inJump = 3;
   int preInput = 0;
-  bool ProcessInput() {
-    bool ret = false;
-    Status n = now.Copy();
+  void ProcessInput() {
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
-      if (preInput == inLeft) return false;
+      if (preInput == inLeft) return;
       preInput = inLeft;
       Hide(now);
       if (IsEmpty(now, -1, 0)) Move(now, -1, 0);
       Show(now);
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
-      if (preInput == inRight) return false;
+      if (preInput == inRight) return;
       preInput = inRight;
       Hide(now);
       if (IsEmpty(now, 1, 0)) Move(now, 1, 0);
       Show(now);
     } else if (Input.GetButtonDown("Jump")) { // Space or Y
-      if (preInput == inJump) return false;
+      if (preInput == inJump) return;
       preInput = inJump;
-      n.rotate++;
+      //n.rotate++;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       fWait -= wait / 2;
     } else { // None
       preInput = 0;
     }
-    return ret;
   }
   void Down() {
     Hide(now);
@@ -135,8 +137,8 @@ public class Controller : MonoBehaviour {
   }
   Color c;
   void Render() {
-    for (int x = 0; x < 12; x++) {
-      for (int y = 0; y < 25; y++) {
+    for (int x = 1; x < 11; x++) {
+      for (int y = 1; y < 25; y++) {
         if (board[x, y] == 9) {
           c = srBlock[x, y].color;
           c.r = 1f; c.g = 1f; c.b = 1f;
@@ -150,14 +152,6 @@ public class Controller : MonoBehaviour {
           c.r = 0f; c.g = 0f; c.b = 0f;
           srBlock[x, y].color = c;
         }
-      }
-    }
-    //-> ブロック出現位置より上の壁
-    for (int x = 0; x < 2; x++) {
-      for (int y = 21; y < 25; y++) {
-        c = srBlock[x*11, y].color;
-        c.r = 0f; c.g = 0f; c.b = 0f;
-        srBlock[x*11, y].color = c;
       }
     }
   }
