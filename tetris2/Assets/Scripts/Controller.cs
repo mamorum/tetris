@@ -4,52 +4,26 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour {
   public GameObject prfbBlock;
-  static Position Pos(int x, int y) { return new Position(x, y); }
-  int[,] board = new int[12, 25];
   SpriteRenderer[,] srBlock = new SpriteRenderer[12, 25];
-  Block[] block = {
-    new Block(1, Pos(0, 0), Pos(0, 0), Pos(0, 0)), // null
-    new Block(2, Pos(0, -1), Pos(0, 1), Pos(0, 2)), // tetris
-    new Block(4, Pos(0, -1), Pos(0, 1), Pos(1, 1)), // L1
-    new Block(4, Pos(0, -1), Pos(0, 1), Pos(-1, 1)), // L2
-    new Block(2, Pos(0, -1), Pos(1, 0), Pos(1, 1)), // Key1
-    new Block(2, Pos(0, -1), Pos(-1, 0), Pos(-1, 1)), // Key2
-    new Block(1, Pos(0, 1), Pos(1, 0), Pos(1, 1)), // Square
-    new Block(4, Pos(0, -1), Pos(1, 0), Pos(-1, 0)) // T
+  int[,] board = new int[12, 25];
+  Cells[] cells = new Cells[] {
+    null, new Line(), new Square(), new L1()
   };
-  Status current = new Status();
-
-  bool PutBlock(Status s, bool action) {
-    if (board[s.x, s.y] != 0) return false;
-    if (action) board[s.x, s.y] = s.type;
-    for (int i = 0; i < 3; i++) {
-      int dx = block[s.type].p[i].x;
-      int dy = block[s.type].p[i].y;
-      int r = s.rotate % block[s.type].rotate;
-      for (int j = 0; j < r; j++) {
-        int nx, ny;
-        nx = dx; ny = dy; dx = ny; dy = -nx;
-      }
-      if (board[s.x + dx, s.y + dy] != 0) {
-        return false;
-      }
-      if (action) {
-        board[s.x + dx, s.y + dy] = s.type;
-      }
-    }
-    if (!action) PutBlock(s, true);
-    return true;
+  Status now = new Status();
+  void ResetNow() {
+    now.x = 5;
+    now.y = 21;
+    //now.type = Random.Range(1, 8); // 1 ～ 7
+    //now.rotate = Random.Range(0, 5); // 0 ～ 4
+    now.type = Random.Range(0, 4); // 1 ～ 3
+    now.rotate = 0;
   }
-
   void Start() {
     //-> Init board
     for (int x=0; x<12; x++) {
       for (int y=0; y<25; y++) {
-        if (x==0 || x==11 || y==0) {
-          board[x, y] = 1;
-        } else {
-          board[x, y] = 0;
-        }
+        if (x==0 || x==11 || y==0) board[x, y] = 1;
+        else board[x, y] = 0;
       }
     }
     //-> Init Sprite
@@ -64,34 +38,46 @@ public class Controller : MonoBehaviour {
         srBlock[x, y].transform.position = pos;
       }
     }
-    //-> Init Current
-    current.x = 5;
-    current.y = 21;
-    current.type = Random.Range(1, 8); // 1 ～ 7
-    current.rotate = Random.Range(0, 5); // 0 ～ 4
-    PutBlock(current, false);
+    ResetNow();
+    Show(now);
+    Render();
+    //PutBlock(current, false);
   }
 
-  Cells[] cells = new Cells[] {
-    new Line(), new Square(), new L1()
-  };
 
-  void HideCurrent() {
-    int x = current.x;
-    int y = current.y;
-    board[x, y] = 0;
-    Cell[] c = cells[current.type].Get(current.rotate);
+  void Hide(Status s) {
+    board[s.x, s.y] = 0;
+    Cell[] c = cells[s.type].Get(s.rotate);
     int cx, cy;
     for (int i = 0; i < c.Length; i++) {
       cx = c[i].x; cy = c[i].y;
-      board[x + cx, y + cy] = 0;
+      board[s.x + cx, s.y + cy] = 0;
     }
   }
-  void ShowCurrent() {
-
+  void Show(Status s) {
+    board[s.x, s.y] = s.type;
+    Cell[] c = cells[s.type].Get(s.rotate);
+    int cx, cy;
+    for (int i = 0; i < c.Length; i++) {
+      cx = c[i].x; cy = c[i].y;
+      board[s.x + cx, s.y + cy] = s.type;
+    }
   }
-  bool CheckHorizontal(int x) {
-    HideCurrent();
+  bool Move(Status s, int x) {
+    int mx = s.x + x;
+    if (board[mx, s.y] != 0) return false;
+    Cell[] c = cells[s.type].Get(s.rotate);
+    int cx, cy;
+    //-> Check
+    for (int i = 0; i < c.Length; i++) {
+      cx = c[i].x; cy = c[i].y;
+      if (board[mx + cx, s.y + cy] != 0) {
+        return false;
+      }
+    }
+    //-> Move
+    s.x = mx;
+    Show(s);
     return true;
   }
 
@@ -99,18 +85,17 @@ public class Controller : MonoBehaviour {
   int preInput = 0;
   bool ProcessInput() {
     bool ret = false;
-    Status n = current.Copy();
+    Status n = now.Copy();
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
-      if (preInput != inLeft) {
-        preInput = inLeft;
-        n.x--;
-        CheckHorizontal(-1);
-      }
+      if (preInput == inLeft) return false;
+      preInput = inLeft;
+      Hide(now);
+      if (!Move(now, -1)) Show(now);
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
-      if (preInput != inRight) {
-        preInput = inRight;
-        n.x++;
-      }
+      if (preInput == inRight) return false;
+      preInput = inRight;
+      Hide(now);
+      if (!Move(now, 1)) Show(now);
     } else if (Input.GetButtonDown("Jump")) { // Space or Y
       if (preInput != inJump) {
         preInput = inJump;
@@ -122,69 +107,23 @@ public class Controller : MonoBehaviour {
     } else { // None
       preInput = 0;
     }
-    if (n.x != current.x || n.y != current.y || n.rotate != current.rotate) {
-      DeleteBlock(current);
-      if (PutBlock(n, false)) current = n;
-      else PutBlock(current, false);
+    if (n.x != now.x || n.y != now.y || n.rotate != now.rotate) {
+      //DeleteBlock(current);
+      //if (PutBlock(n, false)) current = n;
+      //else PutBlock(current, false);
     }
     return ret;
   }
-  void BlockDown() {
-    DeleteBlock(current);
-    current.y--;
-    if (!PutBlock(current, false)) {
-      current.y++;
-      PutBlock(current, false);
-      DeleteLine();
-      current.x = 5;
-      current.y = 21;
-      current.type = Random.Range(1, 8); // 1 ～ 7
-      current.rotate = Random.Range(0, 5); // 0 ～ 4
-      if (!PutBlock(current, false)) {
-        // game over
-      }
-    }
-  }
-  void DeleteBlock(Status s) {
-    board[s.x, s.y] = 0;
-    for (int i = 0; i < 3; i++) {
-      int dx = block[s.type].p[i].x;
-      int dy = block[s.type].p[i].y;
-      int r = s.rotate % block[s.type].rotate;
-      for (int j = 0; j < r; j++) {
-        int nx, ny;
-        nx = dx; ny = dy; dx = ny; dy = -nx;
-      }
-      board[s.x + dx, s.y + dy] = 0;
-    }
-  }
-  void DeleteLine() {
-    for (int y = 1; y < 23; y++) {
-      bool flag = true;
-      for (int x = 1; x <= 10; x++) {
-        if (board[x, y] == 0) {
-          flag = false;
-        }
-      }
-      if (flag) {
-        for (int j = y; j < 23; j++) {
-          for (int i = 1; i <= 10; i++) {
-            board[i, j] = board[i, j + 1];
-          }
-        }
-        y--;
-      }
-    }
-  }
+
 
   int w = 0;
   void Update() {
     ProcessInput();
-    if (w == 60) {
-      BlockDown();
-      w = 0;
-    }
-    w++;
+    //if (w == 60) {
+    //  //BlockDown();
+    //  w = 0;
+    //}
+    //w++;
     Render();
   }
   Color c;

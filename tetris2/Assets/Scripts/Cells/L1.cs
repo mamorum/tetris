@@ -15,7 +15,7 @@ public class L1 : Cells {
   static Cell[] rotate3 = new Cell[] {
     new Cell(-1, 0), new Cell(1, 0), new Cell(-1, 1)
   };
-  Cell[][] all = new Cell[][] {
+  static Cell[][] all = new Cell[][] {
     rotate0, rotate1, rotate2, rotate3
   };
   internal override Cell[] Get(int rotate) {
