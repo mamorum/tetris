@@ -15,7 +15,7 @@ public class Controller : MonoBehaviour {
     now.y = 21;
     //now.type = Random.Range(1, 8); // 1 ～ 7
     //now.rotate = Random.Range(0, 5); // 0 ～ 4
-    now.type = Random.Range(0, 4); // 1 ～ 3
+    now.type = Random.Range(1, 4); // 1 ～ 3
     now.rotate = 0;
   }
   void Start() {
@@ -54,7 +54,9 @@ public class Controller : MonoBehaviour {
       board[s.x + cx, s.y + cy] = 0;
     }
   }
-  void Show(Status s) {
+  void Show(Status s) { Show(s, 0, 0);  }
+  void Show(Status s, int x, int y) {
+    s.x += x; s.y += y;
     board[s.x, s.y] = s.type;
     Cell[] c = cells[s.type].Get(s.rotate);
     int cx, cy;
@@ -63,21 +65,18 @@ public class Controller : MonoBehaviour {
       board[s.x + cx, s.y + cy] = s.type;
     }
   }
-  bool Move(Status s, int x) {
-    int mx = s.x + x;
-    if (board[mx, s.y] != 0) return false;
+  bool Check(Status s, int x, int y) {
+    int nx = s.x + x;
+    int ny = s.y + y;
+    if (board[nx, ny] != 0) return false;
     Cell[] c = cells[s.type].Get(s.rotate);
     int cx, cy;
-    //-> Check
     for (int i = 0; i < c.Length; i++) {
       cx = c[i].x; cy = c[i].y;
-      if (board[mx + cx, s.y + cy] != 0) {
+      if (board[nx + cx, ny + cy] != 0) {
         return false;
       }
     }
-    //-> Move
-    s.x = mx;
-    Show(s);
     return true;
   }
 
@@ -90,12 +89,14 @@ public class Controller : MonoBehaviour {
       if (preInput == inLeft) return false;
       preInput = inLeft;
       Hide(now);
-      if (!Move(now, -1)) Show(now);
+      if (Check(now, -1, 0)) Show(now, -1, 0);
+      else Show(now);
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput == inRight) return false;
       preInput = inRight;
       Hide(now);
-      if (!Move(now, 1)) Show(now);
+      if (Check(now, 1, 0)) Show(now, 1, 0);
+      Show(now);
     } else if (Input.GetButtonDown("Jump")) { // Space or Y
       if (preInput != inJump) {
         preInput = inJump;
@@ -114,16 +115,18 @@ public class Controller : MonoBehaviour {
     }
     return ret;
   }
+  void Down() {
 
+  }
 
   int w = 0;
   void Update() {
     ProcessInput();
-    //if (w == 60) {
-    //  //BlockDown();
-    //  w = 0;
-    //}
-    //w++;
+    if (w == 60) {
+      Down();
+      w = 0;
+    }
+    w++;
     Render();
   }
   Color c;
