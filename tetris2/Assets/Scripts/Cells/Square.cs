@@ -9,4 +9,7 @@ public class Square : Cells {
   internal override Cell[] Get(int rotate) {
     return rotate0;
   }
+  internal override int Rotate(int now) {
+    return 0;
+  }
 }

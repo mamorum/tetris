@@ -32,7 +32,7 @@ public class Controller : MonoBehaviour {
     for (int x = 0; x < 12; x++) {
       nx = -1.955f + (x * 0.355f);
       for (int y = 0; y < 25; y++) {
-        ny = -4.5f + (y * 0.355f);
+        ny = -3.790f + (y * 0.355f);
         srBlock[x, y] = Instantiate(prfbBlock).GetComponent<SpriteRenderer>();
         pos = srBlock[x, y].transform.position;
         pos.x = nx; pos.y = ny;
@@ -150,6 +150,14 @@ public class Controller : MonoBehaviour {
           c.r = 0f; c.g = 0f; c.b = 0f;
           srBlock[x, y].color = c;
         }
+      }
+    }
+    //-> ブロック出現位置より上の壁
+    for (int x = 0; x < 2; x++) {
+      for (int y = 21; y < 25; y++) {
+        c = srBlock[x*11, y].color;
+        c.r = 0f; c.g = 0f; c.b = 0f;
+        srBlock[x*11, y].color = c;
       }
     }
   }

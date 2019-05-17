@@ -15,4 +15,8 @@ public class Line : Cells {
   internal override Cell[] Get(int rotate) {
     return all[rotate];
   }
+  internal override int Rotate(int now) {
+    if (now == 0) return 1;
+    else return 0;
+  }
 }
