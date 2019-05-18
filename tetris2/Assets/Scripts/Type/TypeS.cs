@@ -13,5 +13,5 @@ public class TypeS : Rotate2 {
   internal override Block[] Blocks(int rotate) {
     return rotations[rotate];
   }
-  internal override int Id() { return Types.i; }
+  internal override int Id() { return Types.s; }
 }

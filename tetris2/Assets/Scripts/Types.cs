@@ -11,7 +11,23 @@ public class Types {
     new TypeZ(), new TypeJ(), new TypeL(),
     new TypeT()
   };
+  static int index = types.Length - 1;
   internal static Type Get() {
-    return types[Random.Range(0, types.Length)];
+    index++;
+    if (index == types.Length) {
+      Shuffle();
+      index = 0;
+    }
+    return types[index];
+  }
+  static Type swap;
+  static void Shuffle() {
+    int j;
+    for (int i = types.Length - 1; i > 0; i--) {
+      j = Random.Range(0, i + 1);
+      swap = types[i];
+      types[i] = types[j];
+      types[j] = swap;
+    }
   }
 }

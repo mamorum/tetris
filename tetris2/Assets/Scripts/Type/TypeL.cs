@@ -19,5 +19,5 @@ public class TypeL : Rotate4 {
   internal override Block[] Blocks(int rotate) {
     return rotations[rotate];
   }
-  internal override int Id() { return Types.j; }
+  internal override int Id() { return Types.l; }
 }

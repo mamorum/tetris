@@ -7,6 +7,7 @@ public class Controller : MonoBehaviour {
   SpriteRenderer[,] blocks = new SpriteRenderer[12, 25];
   int[,] board = new int[12, 25];
   Now n = new Now();
+  Color red, yellow, purple, green, indigo, orange, lblue;
   void Start() {
     //-> Init board
     for (int x=0; x<12; x++) {
@@ -28,12 +29,26 @@ public class Controller : MonoBehaviour {
         blocks[x, y].transform.position = pos;
       }
     }
-    //-> Hide Upper Wall
-    for (int x = 0; x < 2; x++) {
-      for (int y = 21; y < 25; y++) {
-        c = blocks[x * 11, y].color;
-        c.r = 0f; c.g = 0f; c.b = 0f;
-        blocks[x * 11, y].color = c;
+    //-> Init Block Colors
+    ColorUtility.TryParseHtmlString("#f44336", out red);
+    ColorUtility.TryParseHtmlString("#FFEB3B", out yellow);
+    ColorUtility.TryParseHtmlString("#673AB7", out purple);
+    ColorUtility.TryParseHtmlString("#4CAF50", out green);
+    ColorUtility.TryParseHtmlString("#3F51B5", out indigo);
+    ColorUtility.TryParseHtmlString("#FF9800", out orange);
+    ColorUtility.TryParseHtmlString("#03A9F4", out lblue);
+    //-> Init Wall
+    for (int x = 0; x < 12; x++) {
+      if (x == 0 || x == 11) {
+        //-> hide upper wall
+        for (int y = 21; y < 25; y++) {
+          Color(x, y, 0, 0, 0);
+        }
+        for (int y = 0; y < 21; y++) {
+          Color(x, y, 0.9f, 0.9f, 0.9f);
+        }
+      } else { //-> only bottom
+        Color(x, 0, 0.9f, 0.9f, 0.9f);
       }
     }
     n.Refresh();
@@ -153,25 +168,29 @@ public class Controller : MonoBehaviour {
     }
     Render();
   }
-  Color c;
   void Render() {
+    //-> 壁の内側が対象
     for (int x = 1; x < 11; x++) {
       for (int y = 1; y < 25; y++) {
-        if (board[x, y] == Types.wall) {
-          c = blocks[x, y].color;
-          c.r = 1f; c.g = 1f; c.b = 1f;
-          blocks[x, y].color = c;
-        } else if (board[x, y] != Types.empty) {
-          c = blocks[x, y].color;
-          c.r = 0.65f; c.g = 0.65f; c.b = 0.65f;
-          blocks[x, y].color = c;
-        } else {
-          c = blocks[x, y].color;
-          c.r = 0f; c.g = 0f; c.b = 0f;
-          blocks[x, y].color = c;
-        }
+        if (board[x, y] == Types.i) Color(x, y, red);
+        else if (board[x, y] == Types.o) Color(x, y, yellow);
+        else if (board[x, y] == Types.s) Color(x, y, purple);
+        else if (board[x, y] == Types.z) Color(x, y, green);
+        else if (board[x, y] == Types.j) Color(x, y, indigo);
+        else if (board[x, y] == Types.l) Color(x, y, orange);
+        else if (board[x, y] == Types.t) Color(x, y, lblue);
+        else Color(x, y, 0, 0, 0); // empty
       }
     }
+  }
+  Color c;
+  void Color(int x, int y, float r, float g, float b) {
+    c = blocks[x, y].color;
+    c.r = r; c.g = g; c.b = b;
+    blocks[x, y].color = c;
+  }
+  void Color(int x, int y, Color c) {
+    blocks[x, y].color = c;
   }
 }
 
