@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class O : Type {
-  internal override int Id() { return o; }
+  internal override int Id() { return Types.o; }
   static Block[] rotate0 = new Block[] {
     new Block(1, 0), new Block(0, 1), new Block(1, 1)
   };

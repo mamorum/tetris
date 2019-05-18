@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 internal class Now {
-  internal int x, y, rotate;
-  internal Type type;
+  internal int x, y;
+  Type type; int rotate; 
+  internal void Refresh() {
+    x = 5; y = 21;
+    type = Types.Get();
+    rotate = type.RotateRandom();
+  }
+  internal int Type() {
+    return type.Id();
+  }
   internal Block[] Blocks() {
     return type.Blocks(rotate);
   }
@@ -15,8 +23,5 @@ internal class Now {
   }
   internal void Rotate() {
     rotate = type.Rotate(rotate);
-  }
-  internal void RotateRandom() {
-    rotate = type.RotateRandom();
   }
 }

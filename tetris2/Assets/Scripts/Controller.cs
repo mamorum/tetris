@@ -6,25 +6,13 @@ public class Controller : MonoBehaviour {
   public GameObject prfbBlock;
   SpriteRenderer[,] blocks = new SpriteRenderer[12, 25];
   int[,] board = new int[12, 25];
-  Type[] types = new Type[] {
-    new I(), new O(), new J(), new T()
-  };
   Now n = new Now();
-  void Next() {
-    n.x = 5;
-    n.y = 21;
-    //now.type = Random.Range(1, 8); // 1 ～ 7
-    //now.rotate = Random.Range(0, 5); // 0 ～ 4
-    n.type = types[Random.Range(0, 4)]; // 1 ～ 3
-    n.RotateRandom();
-    Show();
-  }
   void Start() {
     //-> Init board
     for (int x=0; x<12; x++) {
       for (int y=0; y<25; y++) {
-        if (x==0 || x==11 || y==0) board[x, y] = Type.wall;
-        else board[x, y] = Type.empty;
+        if (x==0 || x==11 || y==0) board[x, y] = Types.wall;
+        else board[x, y] = Types.empty;
       }
     }
     //-> Init Sprite
@@ -48,33 +36,34 @@ public class Controller : MonoBehaviour {
         blocks[x * 11, y].color = c;
       }
     }
-    Next();
+    n.Refresh();
+    Show();
     Render();
   }
   void Show() {
-    board[n.x, n.y] = n.type.Id();
+    board[n.x, n.y] = n.Type();
     Block[] b = n.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
-      board[n.x + cx, n.y + cy] = n.type.Id();
+      board[n.x + cx, n.y + cy] = n.Type();
     }
   }
   void Hide() {
-    board[n.x, n.y] = Type.empty;
+    board[n.x, n.y] = Types.empty;
     Block[] b = n.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
-      board[n.x + cx, n.y + cy] = Type.empty;
+      board[n.x + cx, n.y + cy] = Types.empty;
     }
   }
   bool IsEmpty(int x, int y, Block[] b) {
-    if (board[x, y] != Type.empty) return false;
+    if (board[x, y] != Types.empty) return false;
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
-      if (board[x + cx, y + cy] != Type.empty) {
+      if (board[x + cx, y + cy] != Types.empty) {
         return false;
       }
     }
@@ -145,7 +134,8 @@ public class Controller : MonoBehaviour {
   }
   void Dropped() {
     DeleteLine();
-    Next();
+    n.Refresh();
+    Show();
     // TODO: GameOver判定
   }
   void Drop() {
@@ -167,11 +157,11 @@ public class Controller : MonoBehaviour {
   void Render() {
     for (int x = 1; x < 11; x++) {
       for (int y = 1; y < 25; y++) {
-        if (board[x, y] == Type.wall) {
+        if (board[x, y] == Types.wall) {
           c = blocks[x, y].color;
           c.r = 1f; c.g = 1f; c.b = 1f;
           blocks[x, y].color = c;
-        } else if (board[x, y] != Type.empty) {
+        } else if (board[x, y] != Types.empty) {
           c = blocks[x, y].color;
           c.r = 0.65f; c.g = 0.65f; c.b = 0.65f;
           blocks[x, y].color = c;

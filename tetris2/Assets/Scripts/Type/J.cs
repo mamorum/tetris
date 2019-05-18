@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class J : Type {
-  internal override int Id() { return j; }
+  internal override int Id() { return Types.j; }
   //-> 4 rotation pattern
   static Block[] r0 = new Block[] {
     new Block(0, -1), new Block(0, 1), new Block(1, 1)
@@ -26,6 +26,6 @@ public class J : Type {
     else return now + 1;
   }
   internal override int RotateRandom() {
-    return Random.Range(0, 4);
+    return Random.Range(0, rotations.Length);
   }
 }
