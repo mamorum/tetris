@@ -8,5 +8,5 @@ public abstract class Type {
     i = 1, o = 2, s = 3, z = 4, j = 5, l = 6, t = 7;
   internal abstract int Id();
   internal abstract Block[] Blocks(int rotate);
-  internal abstract int Rotate(int now);
+  internal abstract int Rotate(int rotate);
 }

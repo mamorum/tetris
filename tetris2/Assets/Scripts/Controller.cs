@@ -53,7 +53,7 @@ public class Controller : MonoBehaviour {
   }
   void Show() {
     board[n.x, n.y] = n.type.Id();
-    Block[] b = n.type.Blocks(n.rotate);
+    Block[] b = n.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
@@ -62,16 +62,15 @@ public class Controller : MonoBehaviour {
   }
   void Hide() {
     board[n.x, n.y] = Type.empty;
-    Block[] b = n.type.Blocks(n.rotate);
+    Block[] b = n.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
       board[n.x + cx, n.y + cy] = Type.empty;
     }
   }
-  bool IsEmpty(int x, int y, int rotate) {
+  bool IsEmpty(int x, int y, Block[] b) {
     if (board[x, y] != Type.empty) return false;
-    Block[] b = n.type.Blocks(rotate);
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
@@ -81,26 +80,26 @@ public class Controller : MonoBehaviour {
     }
     return true;
   }
-  bool moved;
-  void Move(int x, int y) {
+  bool Move(int x, int y) {
     Hide();
     int nx = n.x + x;
     int ny = n.y + y;
-    if (IsEmpty(nx, ny, n.rotate)) {
-      moved = true;
+    bool moved = false;
+    Block[] b = n.Blocks();
+    if (IsEmpty(nx, ny, b)) {
       n.x = nx;
       n.y = ny;
-    } else {
-      moved = false;
+      moved = true;
     }
     Show();
+    return moved;
   }
 
   void Rotate() {
     Hide();
-    int r = n.type.Rotate(n.rotate);
-    if (IsEmpty(n.x, n.y, r)) {
-      n.rotate = r;
+    Block[] b = n.RotateBlocks();
+    if (IsEmpty(n.x, n.y, b)) {
+      n.Rotate();
     }
     Show();
   }
@@ -126,15 +125,6 @@ public class Controller : MonoBehaviour {
       preInput = 0;
     }
   }
-  void Down() {
-    Move(0, -1);
-    //-> ブロック落下中
-    if (moved) return;
-    //-> ブロック落下済
-    DeleteLine();
-    Next();
-    // TODO: GameOver判定
-  }
   void DeleteLine() {
     for (int y = 1; y < 23; y++) {
       bool flag = true;
@@ -153,6 +143,14 @@ public class Controller : MonoBehaviour {
       }
     }
   }
+  void Dropped() {
+    DeleteLine();
+    Next();
+    // TODO: GameOver判定
+  }
+  void Drop() {
+    if (!Move(0, -1)) Dropped();
+  }
 
   readonly int wait = 60;
   int fWait = 0;
@@ -160,7 +158,7 @@ public class Controller : MonoBehaviour {
     ProcessInput();
     fWait--;
     if (fWait <= 0) {
-      Down();
+      Drop();
       fWait = wait;
     }
     Render();
