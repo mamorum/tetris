@@ -16,7 +16,7 @@ public class Controller : MonoBehaviour {
     //now.type = Random.Range(1, 8); // 1 ～ 7
     //now.rotate = Random.Range(0, 5); // 0 ～ 4
     n.type = types[Random.Range(0, 4)]; // 1 ～ 3
-    n.rotate = 0;
+    n.RotateRandom();
     Show();
   }
   void Start() {

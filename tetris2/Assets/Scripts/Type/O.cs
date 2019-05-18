@@ -13,4 +13,7 @@ public class O : Type {
     internal override int Rotate(int now) {
     return 0;
   }
+  internal override int RotateRandom() {
+    return 0;
+  }
 }

@@ -25,4 +25,7 @@ public class T : Type {
     if (now == 3) return 0;
     else return now + 1;
   }
+  internal override int RotateRandom() {
+    return Random.Range(0, 4);
+  }
 }

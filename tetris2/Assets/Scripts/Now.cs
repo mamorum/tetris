@@ -16,4 +16,7 @@ internal class Now {
   internal void Rotate() {
     rotate = type.Rotate(rotate);
   }
+  internal void RotateRandom() {
+    rotate = type.RotateRandom();
+  }
 }
