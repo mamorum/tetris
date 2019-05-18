@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class I : Type {
-  internal override int Id() { return Types.i; }
+public class TypeI : Rotate2 {
   static Block[] r0 = new Block[] {
     new Block(0, -1), new Block(0, 1), new Block(0, 2)
   };
@@ -14,11 +13,5 @@ public class I : Type {
   internal override Block[] Blocks(int rotate) {
     return rotations[rotate];
   }
-  internal override int Rotate(int now) {
-    if (now == 0) return 1;
-    else return 0;
-  }
-  internal override int RotateRandom() {
-    return Random.Range(0, rotations.Length);
-  }
+  internal override int Id() { return Types.i; }
 }
