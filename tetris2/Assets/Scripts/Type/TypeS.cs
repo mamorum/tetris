@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TypeS : Rotate2 {
   static Block[] r0 = new Block[] {
-    new Block(-1, -1), new Block(-1, 0), new Block(0, 1)
+    new Block(1, -1), new Block(1, 0), new Block(0, 1)
   };
   static Block[] r1 = new Block[] {
     new Block(-1, -1), new Block(0, -1), new Block(1, 0)
