@@ -12,7 +12,7 @@ public class TypeO : Type {
   internal override int Rotate(int now) {
     return 0;
   }
-  internal override int RotateRandom() {
+  internal override int DefaultRotate() {
     return 0;
   }
   internal override int Id() { return Types.o; }

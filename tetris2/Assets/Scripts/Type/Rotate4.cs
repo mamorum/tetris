@@ -7,7 +7,7 @@ public abstract class Rotate4 : Type {
     if (now == 3) return 0;
     else return now + 1;
   }
-  internal override int RotateRandom() {
-    return Random.Range(0, 4);
+  internal override int DefaultRotate() {
+    return 3;
   }
 }

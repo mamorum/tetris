@@ -8,7 +8,7 @@ internal class Now {
   internal void Refresh() {
     x = 5; y = 21;
     type = Types.Get();
-    rotate = type.RotateRandom();
+    rotate = type.DefaultRotate();
   }
   internal int Type() {
     return type.Id();
