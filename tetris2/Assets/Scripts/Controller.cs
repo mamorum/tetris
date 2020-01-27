@@ -7,7 +7,7 @@ public class Controller : MonoBehaviour {
   SpriteRenderer[,] blocks = new SpriteRenderer[12, 25];
   int[,] board = new int[12, 25];
   Now n = new Now();
-  Color red, yellow, purple, green, indigo, orange, lblue;
+  Color red, yellow, purple, green, indigo, orange, blue;
   void Start() {
     //-> Init board
     for (int x=0; x<12; x++) {
@@ -32,11 +32,11 @@ public class Controller : MonoBehaviour {
     //-> Init Block Colors
     ColorUtility.TryParseHtmlString("#f44336", out red);
     ColorUtility.TryParseHtmlString("#FFD83B", out yellow);
-    ColorUtility.TryParseHtmlString("#673AB7", out purple);
+    ColorUtility.TryParseHtmlString("#B53DC4", out purple);
     ColorUtility.TryParseHtmlString("#4CAF50", out green);
     ColorUtility.TryParseHtmlString("#3F51B5", out indigo);
     ColorUtility.TryParseHtmlString("#FF9800", out orange);
-    ColorUtility.TryParseHtmlString("#03A9F4", out lblue);
+    ColorUtility.TryParseHtmlString("#03A9F4", out blue);
     //-> Init Wall
     for (int x = 0; x < 12; x++) {
       if (x == 0 || x == 11) {
@@ -172,13 +172,13 @@ public class Controller : MonoBehaviour {
     //-> 壁の内側が対象
     for (int x = 1; x < 11; x++) {
       for (int y = 1; y < 25; y++) {
-        if (board[x, y] == Types.i) Color(x, y, red);
+        if (board[x, y] == Types.i) Color(x, y, blue);
         else if (board[x, y] == Types.o) Color(x, y, yellow);
-        else if (board[x, y] == Types.s) Color(x, y, purple);
-        else if (board[x, y] == Types.z) Color(x, y, green);
+        else if (board[x, y] == Types.s) Color(x, y, green);
+        else if (board[x, y] == Types.z) Color(x, y, red);
         else if (board[x, y] == Types.j) Color(x, y, indigo);
         else if (board[x, y] == Types.l) Color(x, y, orange);
-        else if (board[x, y] == Types.t) Color(x, y, lblue);
+        else if (board[x, y] == Types.t) Color(x, y, purple);
         else Color(x, y, 0, 0, 0); // empty
       }
     }
