@@ -31,7 +31,7 @@ public class Controller : MonoBehaviour {
     }
     //-> Init Block Colors
     ColorUtility.TryParseHtmlString("#f44336", out red);
-    ColorUtility.TryParseHtmlString("#FFEB3B", out yellow);
+    ColorUtility.TryParseHtmlString("#FFD83B", out yellow);
     ColorUtility.TryParseHtmlString("#673AB7", out purple);
     ColorUtility.TryParseHtmlString("#4CAF50", out green);
     ColorUtility.TryParseHtmlString("#3F51B5", out indigo);
