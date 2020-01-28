@@ -6,7 +6,7 @@ internal class Now {
   internal int x, y;
   Type type; int rotate; 
   internal void Refresh() {
-    x = 5; y = 21;
+    x = 5; y = 20;
     type = Types.Get();
     rotate = type.DefaultRotate();
   }
