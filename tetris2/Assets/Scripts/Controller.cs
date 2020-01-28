@@ -7,8 +7,19 @@ public class Controller : MonoBehaviour {
   SpriteRenderer[,] blocks = new SpriteRenderer[12, 25];
   int[,] board = new int[12, 25];
   Now n = new Now();
-  Color red, yellow, purple, green, indigo, orange, blue;
+  Color black, gray,
+    blue, yellow, green, red, indigo, orange, purple;
   void Start() {
+    //-> Init Block Colors
+    ColorUtility.TryParseHtmlString("#000000", out black);
+    ColorUtility.TryParseHtmlString("#e6e6e6", out gray);
+    ColorUtility.TryParseHtmlString("#03a9f4", out blue);
+    ColorUtility.TryParseHtmlString("#ffd83b", out yellow);
+    ColorUtility.TryParseHtmlString("#4caf50", out green);
+    ColorUtility.TryParseHtmlString("#f44336", out red);
+    ColorUtility.TryParseHtmlString("#3f51b5", out indigo);
+    ColorUtility.TryParseHtmlString("#ff9800", out orange);
+    ColorUtility.TryParseHtmlString("#b53dc4", out purple);
     //-> Init board
     for (int x=0; x<12; x++) {
       for (int y=0; y<25; y++) {
@@ -29,26 +40,18 @@ public class Controller : MonoBehaviour {
         blocks[x, y].transform.position = pos;
       }
     }
-    //-> Init Block Colors
-    ColorUtility.TryParseHtmlString("#f44336", out red);
-    ColorUtility.TryParseHtmlString("#FFD83B", out yellow);
-    ColorUtility.TryParseHtmlString("#B53DC4", out purple);
-    ColorUtility.TryParseHtmlString("#4CAF50", out green);
-    ColorUtility.TryParseHtmlString("#3F51B5", out indigo);
-    ColorUtility.TryParseHtmlString("#FF9800", out orange);
-    ColorUtility.TryParseHtmlString("#03A9F4", out blue);
     //-> Init Wall
     for (int x = 0; x < 12; x++) {
       if (x == 0 || x == 11) {
         //-> hide upper wall
         for (int y = 21; y < 25; y++) {
-          Color(x, y, 0, 0, 0);
+          Color(x, y, black);
         }
         for (int y = 0; y < 21; y++) {
-          Color(x, y, 0.9f, 0.9f, 0.9f);
+          Color(x, y, gray);
         }
       } else { //-> only bottom
-        Color(x, 0, 0.9f, 0.9f, 0.9f);
+        Color(x, 0, gray);
       }
     }
     n.Refresh();
@@ -179,15 +182,9 @@ public class Controller : MonoBehaviour {
         else if (board[x, y] == Types.j) Color(x, y, indigo);
         else if (board[x, y] == Types.l) Color(x, y, orange);
         else if (board[x, y] == Types.t) Color(x, y, purple);
-        else Color(x, y, 0, 0, 0); // empty
+        else Color(x, y, black); // empty
       }
     }
-  }
-  Color c;
-  void Color(int x, int y, float r, float g, float b) {
-    c = blocks[x, y].color;
-    c.r = r; c.g = g; c.b = b;
-    blocks[x, y].color = c;
   }
   void Color(int x, int y, Color c) {
     blocks[x, y].color = c;
