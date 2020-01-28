@@ -13,10 +13,10 @@ internal class Now {
   internal int Type() {
     return type.Id();
   }
-  internal Block[] Blocks() {
+  internal Point[] Blocks() {
     return type.Blocks(rotate);
   }
-  internal Block[] RotateBlocks() {
+  internal Point[] RotateBlocks() {
     return type.Blocks(
       type.Rotate(rotate)
     );

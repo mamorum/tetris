@@ -57,7 +57,7 @@ public class Controller : MonoBehaviour {
   }
   void Show() {
     board[n.x, n.y] = n.Type();
-    Block[] b = n.Blocks();
+    Point[] b = n.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
@@ -66,14 +66,14 @@ public class Controller : MonoBehaviour {
   }
   void Hide() {
     board[n.x, n.y] = Types.empty;
-    Block[] b = n.Blocks();
+    Point[] b = n.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
       board[n.x + cx, n.y + cy] = Types.empty;
     }
   }
-  bool IsEmpty(int x, int y, Block[] b) {
+  bool IsEmpty(int x, int y, Point[] b) {
     if (board[x, y] != Types.empty) return false;
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
@@ -89,7 +89,7 @@ public class Controller : MonoBehaviour {
     int nx = n.x + x;
     int ny = n.y + y;
     bool moved = false;
-    Block[] b = n.Blocks();
+    Point[] b = n.Blocks();
     if (IsEmpty(nx, ny, b)) {
       n.x = nx;
       n.y = ny;
@@ -101,7 +101,7 @@ public class Controller : MonoBehaviour {
 
   void Rotate() {
     Hide();
-    Block[] b = n.RotateBlocks();
+    Point[] b = n.RotateBlocks();
     if (IsEmpty(n.x, n.y, b)) {
       n.Rotate();
     }

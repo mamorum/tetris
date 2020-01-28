@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TypeI : Rotate2 {
-  static Block[] r0 = new Block[] {
-    new Block(0, -1), new Block(0, 1), new Block(0, 2)
+  static Point[][] rotations = new Point[][] {
+    new Point[] {
+      new Point(0, -1), new Point(0, 1), new Point(0, 2)
+    },
+    new Point[] {
+      new Point(-1, 0), new Point(1, 0), new Point(2, 0)
+    }
   };
-  static Block[] r1 = new Block[] {
-    new Block(-1, 0), new Block(1, 0), new Block(2, 0)
-  };
-  static Block[][] rotations = new Block[][] { r0, r1 };
-  internal override Block[] Blocks(int rotate) {
+  internal override Point[] Blocks(int rotate) {
     return rotations[rotate];
   }
   internal override int Id() { return Types.i; }
