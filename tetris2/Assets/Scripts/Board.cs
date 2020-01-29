@@ -6,6 +6,7 @@ public class Board {
   Controller ctrl; Key key;
   Status st = new Status();
   int[,] board = new int[12, 25];
+  bool moved = false;
   SpriteRenderer[,] cells = new SpriteRenderer[12, 25];
   Color black, gray,
     blue, yellow, green, red, indigo, orange, purple;
@@ -88,11 +89,11 @@ public class Board {
     }
     return true;
   }
-  internal bool MoveBlock(int x, int y) {
+  internal void MoveBlock(int x, int y) {
     HideBlock();
     int nx = st.x + x;
     int ny = st.y + y;
-    bool moved = false;
+    moved = false;
     Point[] b = st.Blocks();
     if (IsEmpty(nx, ny, b)) {
       st.x = nx;
@@ -100,7 +101,6 @@ public class Board {
       moved = true;
     }
     FixBlock();
-    return moved;
   }
 
   internal void RotateBlock() {
@@ -111,7 +111,6 @@ public class Board {
     }
     FixBlock();
   }
-
   void DeleteLine() {
     for (int y = 1; y < 23; y++) {
       bool flag = true;
@@ -138,7 +137,8 @@ public class Board {
     // TODO: GameOver判定
   }
   internal void Drop() {
-    if (!MoveBlock(0, -1)) Dropped();
+    MoveBlock(0, -1);
+    if (!moved) Dropped();
   }
   internal void Render() {
     //-> 壁の内側が対象
