@@ -12,6 +12,10 @@ public class Key {
     }
   }
   //-> Judge user input.
+  bool IsDown() {
+    if (joystic) return Input.GetAxisRaw("Vertical") == -1;
+    else return Input.GetKey(KeyCode.DownArrow);
+  }
   bool IsLeft() {
     if (joystic) return Input.GetAxisRaw("Horizontal") == -1;
     else return Input.GetKey(KeyCode.LeftArrow);
@@ -23,15 +27,17 @@ public class Key {
   bool IsRotate() {
     return Input.GetButton("Jump");  // Space or Y
   }
-  bool IsDown() {
-    if (joystic) return Input.GetAxisRaw("Vertical") == -1;
-    else return Input.GetKey(KeyCode.DownArrow);
-  }
   //-> Process user input.
   readonly int
-    left = 1, right = 2, rotate = 3, down = 4;
+    down = 1, left = 2, right = 3, rotate = 4;
   int pre = 0;
   internal bool dropped = false;
+  void Down() {
+    if (dropped && pre != 0) return;
+    dropped = false;
+    pre = down;
+    ctrl.SpeedUp();
+  }
   void Left() {
     if (pre != 0) return;
     pre = left;
@@ -47,17 +53,11 @@ public class Key {
     pre = rotate;
     board.RotateBlock();
   }
-  void Down() {
-    if (dropped && pre != 0) return;
-    dropped = false;
-    pre = down;
-    ctrl.SpeedUp();
-  }
   internal void Process() {
-    if (IsLeft()) Left();
+    if (IsDown()) Down();
+    else if (IsLeft()) Left();
     else if (IsRight()) Right();
     else if (IsRotate()) Rotate();
-    else if (IsDown()) Down();
     else pre = 0;
   }
 }
