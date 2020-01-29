@@ -4,60 +4,33 @@ using UnityEngine;
 
 public class Key {
   Controller ctrl; Board board;
-  bool joystic = false;
   internal void Init(Controller c, Board b) {
     ctrl = c; board = b;
-    if (Input.GetJoystickNames().Length == 1) {
-      joystic = true;
-    }
   }
-  //-> Judge user input.
-  bool IsDown() {
-    if (joystic) return Input.GetAxisRaw("Vertical") == -1;
-    else return Input.GetKey(KeyCode.DownArrow);
-  }
-  bool IsLeft() {
-    if (joystic) return Input.GetAxisRaw("Horizontal") == -1;
-    else return Input.GetKey(KeyCode.LeftArrow);
-  }
-  bool IsRight() {
-    if (joystic) return Input.GetAxisRaw("Horizontal") == 1;
-    else return Input.GetKey(KeyCode.RightArrow);
-  }
-  bool IsRotate() {
-    return Input.GetButton("Jump");  // Space or Y
-  }
-  //-> Process user input.
-  readonly int
-    down = 1, left = 2, right = 3, rotate = 4;
-  int pre = 0;
   internal bool dropped = false;
-  void Down() {
-    if (dropped && pre != 0) return;
-    dropped = false;
-    pre = down;
-    ctrl.SpeedUp();
-  }
-  void Left() {
-    if (pre != 0) return;
-    pre = left;
-    board.MoveBlock(-1, 0);
-  }
-  void Right() {
-    if (pre != 0) return;
-    pre = right;
-    board.MoveBlock(1, 0);
-  }
-  void Rotate() {
-    if (pre != 0) return;
-    pre = rotate;
-    board.RotateBlock();
-  }
+  readonly int
+    left = 1, right = 2, rotate = 3, down = 4;
+  int pre = 0;
   internal void Process() {
-    if (IsDown()) Down();
-    else if (IsLeft()) Left();
-    else if (IsRight()) Right();
-    else if (IsRotate()) Rotate();
-    else pre = 0;
+    if (Input.GetAxisRaw("Horizontal") == -1) { // Left
+      if (pre == left) return;
+      pre = left;
+      board.MoveBlock(-1, 0);
+    } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
+      if (pre == right) return;
+      pre = right;
+      board.MoveBlock(1, 0);
+    } else if (Input.GetButton("Jump")) { // Space or Y
+      if (pre == rotate) return;
+      pre = rotate;
+      board.RotateBlock();
+    } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
+      if (dropped && pre == down) return;
+      dropped = false;
+      pre = down;
+      ctrl.SpeedUp();
+    } else { // None
+      pre = 0;
+    }
   }
 }
