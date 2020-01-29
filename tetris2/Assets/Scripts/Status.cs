@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-internal class Now {
+internal class Status {
   internal int x, y;
   Type type; int rotate; 
-  internal void Refresh() {
+  internal void Reset() {
     x = 5; y = 20;
     type = Types.Get();
     rotate = type.DefaultRotate();

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Board {
   SpriteRenderer[,] cells = new SpriteRenderer[12, 25];
   int[,] board = new int[12, 25];
-  Now n = new Now();
+  Status st = new Status();
   Color black, gray,
     blue, yellow, green, red, indigo, orange, purple;
   void InitColor() {
@@ -18,7 +18,6 @@ public class Board {
     ColorUtility.TryParseHtmlString("#3f51b5", out indigo);
     ColorUtility.TryParseHtmlString("#ff9800", out orange);
     ColorUtility.TryParseHtmlString("#b53dc4", out purple);
-
   }
   internal void Init(Controller c) {
     InitColor();
@@ -47,26 +46,26 @@ public class Board {
         }
       }
     }
-    n.Refresh();
+    st.Reset();
     Show();
     Render();
   }
   void Show() {
-    board[n.x, n.y] = n.Type();
-    Point[] b = n.Blocks();
+    board[st.x, st.y] = st.Type();
+    Point[] b = st.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
-      board[n.x + cx, n.y + cy] = n.Type();
+      board[st.x + cx, st.y + cy] = st.Type();
     }
   }
   void Hide() {
-    board[n.x, n.y] = Types.empty;
-    Point[] b = n.Blocks();
+    board[st.x, st.y] = Types.empty;
+    Point[] b = st.Blocks();
     int cx, cy;
     for (int i = 0; i < b.Length; i++) {
       cx = b[i].x; cy = b[i].y;
-      board[n.x + cx, n.y + cy] = Types.empty;
+      board[st.x + cx, st.y + cy] = Types.empty;
     }
   }
   bool IsEmpty(int x, int y, Point[] b) {
@@ -82,13 +81,13 @@ public class Board {
   }
   internal bool Move(int x, int y) {
     Hide();
-    int nx = n.x + x;
-    int ny = n.y + y;
+    int nx = st.x + x;
+    int ny = st.y + y;
     bool moved = false;
-    Point[] b = n.Blocks();
+    Point[] b = st.Blocks();
     if (IsEmpty(nx, ny, b)) {
-      n.x = nx;
-      n.y = ny;
+      st.x = nx;
+      st.y = ny;
       moved = true;
     }
     Show();
@@ -97,9 +96,9 @@ public class Board {
 
   internal void Rotate() {
     Hide();
-    Point[] b = n.RotateBlocks();
-    if (IsEmpty(n.x, n.y, b)) {
-      n.Rotate();
+    Point[] b = st.RotateBlocks();
+    if (IsEmpty(st.x, st.y, b)) {
+      st.Rotate();
     }
     Show();
   }
@@ -124,7 +123,7 @@ public class Board {
   }
   void Dropped() {
     DeleteLine();
-    n.Refresh();
+    st.Reset();
     Show();
     // TODO: GameOver判定
   }
