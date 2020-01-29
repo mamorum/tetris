@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public GameObject prfbBlock;
+  public GameObject prfbCell;
   internal SpriteRenderer Cell() {
-    return Instantiate(prfbBlock)
+    return Instantiate(prfbCell)
       .GetComponent<SpriteRenderer>();
   }
   Board board = new Board();
