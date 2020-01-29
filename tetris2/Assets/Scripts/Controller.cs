@@ -11,8 +11,9 @@ public class Controller : MonoBehaviour {
   Board board = new Board();
   Key key = new Key();
   void Start() {
-    board.Init(this);
     key.Init(this, board);
+    board.Init(this, key);
+    board.Render();
   }
   static int wait = 60;
   int fWait = wait;

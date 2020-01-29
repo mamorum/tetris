@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Board {
-  SpriteRenderer[,] cells = new SpriteRenderer[12, 25];
-  int[,] board = new int[12, 25];
+  Controller ctrl; Key key;
   Status st = new Status();
+  int[,] board = new int[12, 25];
+  SpriteRenderer[,] cells = new SpriteRenderer[12, 25];
   Color black, gray,
     blue, yellow, green, red, indigo, orange, purple;
   void InitColor() {
@@ -19,18 +20,22 @@ public class Board {
     ColorUtility.TryParseHtmlString("#ff9800", out orange);
     ColorUtility.TryParseHtmlString("#b53dc4", out purple);
   }
-  internal void Init(Controller c) {
+  void InitCell(int x, int y, float posX, float posY) {
+    cells[x, y] = ctrl.Cell();
+    Vector2 pos = cells[x, y].transform.position;
+    pos.x = posX; pos.y = posY;
+    cells[x, y].transform.position = pos;
+  }
+  internal void Init(Controller c, Key k) {
+    ctrl = c; key = k;
     InitColor();
     //-> Init cells and board
-    Vector2 pos; float nx, ny;
+    float posX, posY;
     for (int x = 0; x < 12; x++) {
-      nx = -1.955f + (x * 0.355f);
+      posX = -1.955f + (x * 0.355f);
       for (int y = 0; y < 25; y++) {
-        ny = -3.790f + (y * 0.355f);
-        cells[x, y] = c.Cell();
-        pos = cells[x, y].transform.position;
-        pos.x = nx; pos.y = ny;
-        cells[x, y].transform.position = pos;
+        posY = -3.790f + (y * 0.355f);
+        InitCell(x, y, posX, posY);
         if (x == 0 || x == 11) {
           board[x, y] = Types.wall;
           if (y >= 21) { //-> hide upper wall
@@ -46,16 +51,15 @@ public class Board {
         }
       }
     }
-    Reset(st);
-    Refresh();
-    Render();
+    NextBlock();
+    FixBlock();
   }
-  void Reset(Status s) {
-    s.x = 5; s.y = 20;
-    s.type = Types.Get();
-    s.rotate = s.type.DefaultRotate();
+  void NextBlock() {
+    st.x = 5; st.y = 20;
+    st.type = Types.Get();
+    st.rotate = st.type.DefaultRotate();
   }
-  void Refresh() {
+  void FixBlock() {
     board[st.x, st.y] = st.Type();
     Point[] b = st.Blocks();
     int cx, cy;
@@ -64,7 +68,7 @@ public class Board {
       board[st.x + cx, st.y + cy] = st.Type();
     }
   }
-  void Hide() {
+  void HideBlock() {
     board[st.x, st.y] = Types.empty;
     Point[] b = st.Blocks();
     int cx, cy;
@@ -84,8 +88,8 @@ public class Board {
     }
     return true;
   }
-  internal bool Move(int x, int y) {
-    Hide();
+  internal bool MoveBlock(int x, int y) {
+    HideBlock();
     int nx = st.x + x;
     int ny = st.y + y;
     bool moved = false;
@@ -95,17 +99,17 @@ public class Board {
       st.y = ny;
       moved = true;
     }
-    Refresh();
+    FixBlock();
     return moved;
   }
 
-  internal void Rotate() {
-    Hide();
+  internal void RotateBlock() {
+    HideBlock();
     Point[] b = st.RotateBlocks();
     if (IsEmpty(st.x, st.y, b)) {
       st.Rotate();
     }
-    Refresh();
+    FixBlock();
   }
 
   void DeleteLine() {
@@ -127,13 +131,14 @@ public class Board {
     }
   }
   void Dropped() {
+    key.dropped = true;
     DeleteLine();
-    Reset(st);
-    Refresh();
+    NextBlock();
+    FixBlock();
     // TODO: GameOver判定
   }
   internal void Drop() {
-    if (!Move(0, -1)) Dropped();
+    if (!MoveBlock(0, -1)) Dropped();
   }
   internal void Render() {
     //-> 壁の内側が対象
