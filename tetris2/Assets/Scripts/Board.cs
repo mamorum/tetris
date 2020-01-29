@@ -46,11 +46,16 @@ public class Board {
         }
       }
     }
-    st.Reset();
-    Show();
+    Reset(st);
+    Refresh();
     Render();
   }
-  void Show() {
+  void Reset(Status s) {
+    s.x = 5; s.y = 20;
+    s.type = Types.Get();
+    s.rotate = s.type.DefaultRotate();
+  }
+  void Refresh() {
     board[st.x, st.y] = st.Type();
     Point[] b = st.Blocks();
     int cx, cy;
@@ -90,7 +95,7 @@ public class Board {
       st.y = ny;
       moved = true;
     }
-    Show();
+    Refresh();
     return moved;
   }
 
@@ -100,7 +105,7 @@ public class Board {
     if (IsEmpty(st.x, st.y, b)) {
       st.Rotate();
     }
-    Show();
+    Refresh();
   }
 
   void DeleteLine() {
@@ -123,8 +128,8 @@ public class Board {
   }
   void Dropped() {
     DeleteLine();
-    st.Reset();
-    Show();
+    Reset(st);
+    Refresh();
     // TODO: GameOver判定
   }
   internal void Drop() {
