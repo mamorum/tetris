@@ -15,5 +15,4 @@ public class TypeO : Type {
   internal override int DefaultRotate() {
     return 0;
   }
-  internal override int Id() { return Types.o; }
 }

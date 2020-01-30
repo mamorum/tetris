@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TypeI : Rotate2 {
+public class I : Rotate2 {
   static Point[][] rotations = new Point[][] {
     new Point[] {
       new Point(0, -1), new Point(0, 1), new Point(0, 2)
@@ -14,5 +14,4 @@ public class TypeI : Rotate2 {
   internal override Point[] Blocks(int rotate) {
     return rotations[rotate];
   }
-  internal override int Id() { return Types.i; }
 }

@@ -14,5 +14,4 @@ public class TypeZ : Rotate2 {
   internal override Point[] Blocks(int rotate) {
     return rotations[rotate];
   }
-  internal override int Id() { return Types.z; }
 }
