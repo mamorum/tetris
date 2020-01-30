@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Board {
-  //-> definitions
+  //-> board and cell
+  static int[,] board = new int[12, 25];
+  static SpriteRenderer[,] cells
+    = new SpriteRenderer[12, 25];
+  //-> id, color, type
+  static int empty = 0, wall = 1,
+    i = 2, o = 3, s = 4, z = 5, j = 6, l = 7, t = 8;
+  static int[] blockId = new int[] { i, o, s, z, j, l, t };
   static Color[] colors;
   static Color black, gray,
     blue, yellow, green, red, indigo, orange, purple;
-  static int empty = 0, wall = 1,
-     i = 2, o = 3, s = 4, z = 5, j = 6, l = 7, t = 8;
+  // TODO: Typeと子クラスを削除する
   static Type[] types = new Type[] {
-    null, null, //-> empty, wall
+    null /* empty */, null, /* wall */
     new I(), new TypeO(), new TypeS(), new TypeZ(),
     new TypeJ(), new TypeL(), new TypeT() };
-  static int[] blocks = new int[] { i, o, s, z, j, l, t };
-  //-> current status
-  int[,] board = new int[12, 25];
-  SpriteRenderer[,] cells = new SpriteRenderer[12, 25];
+  //-> status
   int x, y, id, rotate; bool moved = false;
   Next next = new Next();
+  //-> objects
   Controller ctrl; Key key;
-  void InitColor() {
+  void InitColors() {
     ColorUtility.TryParseHtmlString("#000000", out black);
     ColorUtility.TryParseHtmlString("#e6e6e6", out gray);
     ColorUtility.TryParseHtmlString("#03a9f4", out blue);
@@ -42,7 +46,7 @@ public class Board {
   }
   internal void Init(Controller c, Key k) {
     ctrl = c; key = k;
-    InitColor();
+    InitColors();
     //-> Init cells and board
     float posX, posY;
     for (int x = 0; x < 12; x++) {
@@ -65,7 +69,7 @@ public class Board {
         }
       }
     }
-    next.Init(blocks);
+    next.Init(blockId);
     NextBlock();
     FixBlock();
   }
