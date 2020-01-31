@@ -2,51 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board {
+public class Board : MonoBehaviour {
   //-> board and cell
   static int[,] board = new int[12, 25];
   static SpriteRenderer[,] cells
     = new SpriteRenderer[12, 25];
-  //-> id, color, type
-  static int empty = 0, wall = 1,
-    i = 2, o = 3, s = 4, z = 5, j = 6, l = 7, t = 8;
-  static int[] blockId = new int[] { i, o, s, z, j, l, t };
-  static Color[] colors;
-  static Color black, gray,
-    blue, yellow, green, red, indigo, orange, purple;
-  // TODO: Typeと子クラスを削除する
-  static Type[] types = new Type[] {
-    null /* empty */, null, /* wall */
-    new I(), new TypeO(), new TypeS(), new TypeZ(),
-    new TypeJ(), new TypeL(), new TypeT() };
+  //-> id
+  static int empty = Blocks.empty;
+  static int wall = Blocks.wall;
+  static int o = Blocks.o;
   //-> status
-  int x, y, id, rotate; bool moved = false;
-  Next next = new Next();
+  int x, y, id, rotate;
+  bool moved = false;
   //-> objects
-  Controller ctrl; Key key;
-  void InitColors() {
-    ColorUtility.TryParseHtmlString("#000000", out black);
-    ColorUtility.TryParseHtmlString("#e6e6e6", out gray);
-    ColorUtility.TryParseHtmlString("#03a9f4", out blue);
-    ColorUtility.TryParseHtmlString("#ffd83b", out yellow);
-    ColorUtility.TryParseHtmlString("#4caf50", out green);
-    ColorUtility.TryParseHtmlString("#f44336", out red);
-    ColorUtility.TryParseHtmlString("#3f51b5", out indigo);
-    ColorUtility.TryParseHtmlString("#ff9800", out orange);
-    ColorUtility.TryParseHtmlString("#b53dc4", out purple);
-    colors = new Color[] {
-      black, gray, blue, yellow, green, red, indigo, orange, purple
-    };
-  }
+  public GameObject prfbCell;
+  public Blocks blocks;
+  Next next = new Next();
+  Controller ctrl;
   void InitCell(int x, int y, float posX, float posY) {
-    cells[x, y] = ctrl.Cell();
+    cells[x, y] = Instantiate(prfbCell)
+      .GetComponent<SpriteRenderer>();
     Vector2 pos = cells[x, y].transform.position;
     pos.x = posX; pos.y = posY;
     cells[x, y].transform.position = pos;
   }
-  internal void Init(Controller c, Key k) {
-    ctrl = c; key = k;
-    InitColors();
+  internal void Init(Controller c) {
+    blocks.Init(); next.Init(); ctrl = c;
     //-> Init cells and board
     float posX, posY;
     for (int x = 0; x < 12; x++) {
@@ -57,46 +38,45 @@ public class Board {
         if (x == 0 || x == 11) {
           board[x, y] = wall;
           if (y >= 21) { //-> hide upper wall
-            cells[x, y].color = black;
+            cells[x, y].color = blocks.black;
           } else { //-> wall
-            cells[x, y].color = gray;
+            cells[x, y].color = blocks.gray;
           }
         } else if (y == 0) { //-> wall
           board[x, y] = wall;
-          cells[x, y].color = gray;
+          cells[x, y].color = blocks.gray;
         } else {
           board[x, y] = empty;
         }
       }
     }
-    next.Init(blockId);
     NextBlock();
     FixBlock();
   }
   void NextBlock() {
     x = 5; y = 20;
-    id = next.Get();
-    rotate = types[id].DefaultRotate();
+    id = next.Id();
+    rotate = blocks.LastRotate(id);
   }
   void FixBlock() {
     board[x, y] = id;
-    Point[] b = types[id].Blocks(rotate);
+    XY[] r = blocks.Relatives(id, rotate);
     int cx, cy;
-    for (int i = 0; i < b.Length; i++) {
-      cx = b[i].x; cy = b[i].y;
+    for (int i = 0; i < r.Length; i++) {
+      cx = r[i].x; cy = r[i].y;
       board[x + cx, y + cy] = id;
     }
   }
   void HideBlock() {
     board[x, y] = empty;
-    Point[] b = types[id].Blocks(rotate);
+    XY[] r = blocks.Relatives(id, rotate);
     int cx, cy;
-    for (int i = 0; i < b.Length; i++) {
-      cx = b[i].x; cy = b[i].y;
+    for (int i = 0; i < r.Length; i++) {
+      cx = r[i].x; cy = r[i].y;
       board[x + cx, y + cy] = empty;
     }
   }
-  bool IsEmpty(int tX, int tY, Point[] r) {
+  bool IsEmpty(int tX, int tY, XY[] r) {
     if (board[tX, tY] != empty) return false;
     int rX, rY;
     for (int i = 0; i < r.Length; i++) {
@@ -112,7 +92,7 @@ public class Board {
     int nx = x + tX;
     int ny = y + tY;
     moved = false;
-    Point[] r = types[id].Blocks(rotate);
+    XY[] r = blocks.Relatives(id, rotate);
     if (IsEmpty(nx, ny, r)) {
       x = nx;
       y = ny;
@@ -122,11 +102,11 @@ public class Board {
   }
 
   internal void RotateBlock() {
+    if (id == o) return; // no rotations
+    int nr = blocks.Rotate(id, rotate);
+    XY[] r = blocks.Relatives(id, nr);
     HideBlock();
-    Point[] r = types[id].Blocks(rotate);
-    if (IsEmpty(x, y, r)) {
-      rotate = types[id].Rotate(rotate);
-    }
+    if (IsEmpty(x, y, r)) rotate = nr;
     FixBlock();
   }
   void DeleteLine() {
@@ -147,23 +127,22 @@ public class Board {
       }
     }
   }
-  void Dropped() {
-    key.dropped = true;
+  internal void Drop() {
+    MoveBlock(0, -1);
+    if (moved) return;
+    //-> dropped
+    ctrl.dropped = true;
     DeleteLine();
     NextBlock();
     FixBlock();
     // TODO: GameOver判定
-  }
-  internal void Drop() {
-    MoveBlock(0, -1);
-    if (!moved) Dropped();
   }
   internal void Render() {
     //-> 壁の内側が対象
     for (int x = 1; x < 11; x++) {
       for (int y = 1; y < 25; y++) {
         int i = board[x, y];
-        cells[x, y].color = colors[i];
+        cells[x, y].color = blocks.colors[i];
       }
     }
   }

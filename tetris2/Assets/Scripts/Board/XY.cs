@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Point {
+public class XY {
   internal int x, y;
-  internal Point(int x, int y) {
+  internal XY(int x, int y) {
     this.x = x; this.y = y;
   }
 }

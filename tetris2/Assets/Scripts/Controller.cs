@@ -3,22 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public GameObject prfbCell;
-  internal SpriteRenderer Cell() {
-    return Instantiate(prfbCell)
-      .GetComponent<SpriteRenderer>();
-  }
-  Board board = new Board();
-  Key key = new Key();
+  public Board board;
   void Start() {
-    key.Init(this, board);
-    board.Init(this, key);
+    board.Init(this);
     board.Render();
   }
   static int wait = 60;
   int fWait = wait;
   void Update() {
-    key.Process();
+    ProcessInput();
     fWait--;
     if (fWait <= 0) {
       board.Drop();
@@ -26,8 +19,32 @@ public class Controller : MonoBehaviour {
     }
     board.Render();
   }
-  internal void SpeedUp() {
-    fWait -= wait / 2;
+  //-> process input
+  readonly int
+    left = 1, right = 2, rotate = 3, down = 4;
+  int preInput = 0;
+  internal bool dropped = false;
+  internal void ProcessInput() {
+    if (Input.GetAxisRaw("Horizontal") == -1) { // Left
+      if (preInput == left) return;
+      board.MoveBlock(-1, 0);
+      preInput = left;
+    } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
+      if (preInput == right) return;
+      board.MoveBlock(1, 0);
+      preInput = right;
+    } else if (Input.GetButton("Jump")) { // Space or Y
+      if (preInput == rotate) return;
+      board.RotateBlock();
+      preInput = rotate;
+    } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
+      if (dropped && preInput == down) return;
+      fWait -= wait / 2; // speed up
+      dropped = false;
+      preInput = down;
+    } else { // None
+      preInput = 0;
+    }
   }
 }
 
