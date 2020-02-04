@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Board : MonoBehaviour {
   //-> board and cell
-  static int[,] board = new int[12, 25];
+  static int[,] board = new int[12, 23];
   static SpriteRenderer[,] cells
-    = new SpriteRenderer[12, 25];
+    = new SpriteRenderer[12, 23];
+  static SpriteRenderer[] border
+    = new SpriteRenderer[10];
   //-> id
   static int empty = Blocks.empty;
   static int wall = Blocks.wall;
@@ -32,21 +34,31 @@ public class Board : MonoBehaviour {
     float posX, posY;
     for (int x = 0; x < 12; x++) {
       posX = -1.955f + (x * 0.355f);
-      for (int y = 0; y < 25; y++) {
+      for (int y = 0; y < 23; y++) {
         posY = -3.790f + (y * 0.355f);
         InitCell(x, y, posX, posY);
-        if (x == 0 || x == 11) {
-          board[x, y] = wall;
-          if (y >= 21) { //-> hide upper wall
-            cells[x, y].color = blocks.black;
-          } else { //-> wall
-            cells[x, y].color = blocks.gray;
-          }
-        } else if (y == 0) { //-> wall
+        if (y == 0) {
           board[x, y] = wall;
           cells[x, y].color = blocks.gray;
+        } else if (x == 0 || x == 11) {
+          board[x, y] = wall;
+          if (y == 22) cells[x, y].gameObject.SetActive(false); // hide
+          else cells[x, y].color = blocks.gray;
         } else {
           board[x, y] = empty;
+          cells[x, y].color = blocks.black;
+          if (y == 21) {
+            border[x - 1] = Instantiate(prfbCell)
+              .GetComponent<SpriteRenderer>();
+            Vector2 pos = border[x - 1].transform.position;
+            pos.x = posX; pos.y = posY;
+            border[x - 1].transform.position = pos;
+            border[x - 1].color = blocks.gray;
+            border[x - 1].color
+              = new Color(blocks.gray.r, blocks.gray.g, blocks.gray.b, 0.7f);
+          } else if (y == 22) {
+            cells[x, y].gameObject.SetActive(false); // hide
+          }
         }
       }
     }
@@ -56,7 +68,7 @@ public class Board : MonoBehaviour {
   void NextBlock() {
     x = 5; y = 20;
     id = next.Id();
-    rotate = blocks.LastRotate(id);
+    rotate = blocks.DefaultRotate(id);
   }
   void FixBlock() {
     board[x, y] = id;
@@ -110,22 +122,26 @@ public class Board : MonoBehaviour {
     FixBlock();
   }
   void DeleteLine() {
-    for (int y = 1; y < 23; y++) {
+    for (int y = 1; y < 22; y++) {
       bool flag = true;
-      for (int x = 1; x <= 10; x++) {
-        if (board[x, y] == 0) {
+      for (int x = 1; x < 11; x++) {
+        if (board[x, y] == empty) {
           flag = false;
         }
       }
       if (flag) {
-        for (int j = y; j < 23; j++) {
-          for (int i = 1; i <= 10; i++) {
+        for (int j = y; j < 22; j++) {
+          for (int i = 1; i < 11; i++) {
             board[i, j] = board[i, j + 1];
           }
         }
         y--;
       }
     }
+  }
+  void CheckEnd() {
+    XY[] r = blocks.Relatives(id, rotate);
+    if (!IsEmpty(x, y, r)) ctrl.end = true;
   }
   internal void Drop() {
     MoveBlock(0, -1);
@@ -134,13 +150,12 @@ public class Board : MonoBehaviour {
     ctrl.dropped = true;
     DeleteLine();
     NextBlock();
+    CheckEnd();
     FixBlock();
-    // TODO: GameOver判定
   }
   internal void Render() {
-    //-> 壁の内側が対象
-    for (int x = 1; x < 11; x++) {
-      for (int y = 1; y < 25; y++) {
+    for (int y = 1; y < 22; y++) {
+      for (int x = 1; x < 11; x++) {
         int i = board[x, y];
         cells[x, y].color = blocks.colors[i];
       }

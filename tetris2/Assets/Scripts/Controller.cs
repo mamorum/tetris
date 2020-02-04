@@ -8,14 +8,15 @@ public class Controller : MonoBehaviour {
     board.Init(this);
     board.Render();
   }
-  static int wait = 60;
-  int fWait = wait;
+  internal bool end = false;
+  int frame = 0, drop = 60;
   void Update() {
+    if (end) return;
     ProcessInput();
-    fWait--;
-    if (fWait <= 0) {
+    frame++;
+    if (frame >= drop) {
       board.Drop();
-      fWait = wait;
+      frame = 0;
     }
     board.Render();
   }
@@ -39,7 +40,7 @@ public class Controller : MonoBehaviour {
       preInput = rotate;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       if (dropped && preInput == down) return;
-      fWait -= wait / 2; // speed up
+      frame += drop / 2; // speed up
       dropped = false;
       preInput = down;
     } else { // None

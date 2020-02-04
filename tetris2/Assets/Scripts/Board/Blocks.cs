@@ -3,36 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Blocks : MonoBehaviour {
-  //-> rotations and relative points
-  static XY[][] iR = new XY[][] {
+  //-> relative points (last indexes are default rotation.)
+  static XY[][] rI = new XY[][] {
     new XY[] { new XY(0, -1), new XY(0, 1), new XY(0, 2) },
-    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(2, 0) }}; // default
-  static XY[][] iO = new XY[][] {
-    new XY[] { new XY(1, 0), new XY(0, 1), new XY(1, 1) }}; // default
-  static XY[][] sR = new XY[][] {
+    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(2, 0) }};
+  static XY[][] rO = new XY[][] {
+    new XY[] { new XY(1, 0), new XY(0, 1), new XY(1, 1) }};
+  static XY[][] rS = new XY[][] {
     new XY[] { new XY(1, -1), new XY(1, 0), new XY(0, 1) },
-    new XY[] { new XY(-1, 0), new XY(1, 1), new XY(0, 1) }}; // default
-  static XY[][] zR = new XY[][] {
+    new XY[] { new XY(-1, 0), new XY(1, 1), new XY(0, 1) }};
+  static XY[][] rZ = new XY[][] {
     new XY[] { new XY(0, -1), new XY(1, 0), new XY(1, 1) },
-    new XY[] { new XY(1, 0), new XY(-1, 1), new XY(0, 1) }}; // default
-  static XY[][] jR = new XY[][] {
+    new XY[] { new XY(1, 0), new XY(-1, 1), new XY(0, 1) }};
+  static XY[][] rJ = new XY[][] {
     new XY[] { new XY(0, -1), new XY(0, 1), new XY(1, 1) },
     new XY[] { new XY(1, -1), new XY(1, 0), new XY(-1, 0) },
     new XY[] { new XY(-1, -1), new XY(0, -1), new XY(0, 1) },
-    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(-1, 1) }}; // default
-  static XY[][] lR = new XY[][] {
+    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(-1, 1) }};
+  static XY[][] rL = new XY[][] {
     new XY[] { new XY(0, -1), new XY(1, -1), new XY(0, 1) },
     new XY[] { new XY(-1, -1), new XY(-1, 0), new XY(1, 0) },
     new XY[] { new XY(0, -1), new XY(-1, 1), new XY(0, 1) },
-    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(1, 1) }}; // default
-  static XY[][] tR = new XY[][] {
+    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(1, 1) }};
+  static XY[][] rT = new XY[][] {
     new XY[] { new XY(0, -1), new XY(1, 0), new XY(0, 1) },
     new XY[] { new XY(0, -1), new XY(-1, 0), new XY(1, 0) },
     new XY[] { new XY(0, -1), new XY(-1, 0), new XY(0, 1) },
-    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(0, 1) }}; // default
+    new XY[] { new XY(-1, 0), new XY(1, 0), new XY(0, 1) }};
   static XY[][][] relatives = new XY[][][] {
     null, null, //-> empty, wall
-    iR, iO, sR, zR, jR, lR, tR };
+    rI, rO, rS, rZ, rJ, rL, rT };
   //-> id
   internal static int
     empty = 0, wall = 1,
@@ -49,12 +49,12 @@ public class Blocks : MonoBehaviour {
       blue, yellow, green, red, indigo, orange, purple // i, o, s, z, j, l, t
     };
   }
-  internal int LastRotate(int id) {
+  internal int DefaultRotate(int id) {
     XY[][] r = relatives[id];
-    return r.Length - 1;
+    return r.Length - 1; // last index
   }
   internal int Rotate(int id, int rotate) {
-    int max = LastRotate(id);
+    int max = DefaultRotate(id);
     if (max == rotate) return 0; // back to first
     else return rotate + 1; // increment index
   }
