@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Board : MonoBehaviour {
-  //-> board and cell
   static int[,] board = new int[12, 23];
-  static SpriteRenderer[,] cells
-    = new SpriteRenderer[12, 23];
-  static SpriteRenderer[] border
-    = new SpriteRenderer[10];
+  //-> cell
+  static SpriteRenderer[,] bases = new SpriteRenderer[12, 22];
+  static List<SpriteRenderer> walls = new List<SpriteRenderer>();
   //-> id
   static int empty = Blocks.empty;
   static int wall = Blocks.wall;
@@ -21,46 +19,45 @@ public class Board : MonoBehaviour {
   public Blocks blocks;
   Next next = new Next();
   Controller ctrl;
-  void InitCell(int x, int y, float posX, float posY) {
-    cells[x, y] = Instantiate(prfbCell)
+  void CreateBase(int x, int y, float posX, float posY) {
+    bases[x, y] = Instantiate(prfbCell)
       .GetComponent<SpriteRenderer>();
-    Vector2 pos = cells[x, y].transform.position;
+    Vector2 pos = bases[x, y].transform.position;
     pos.x = posX; pos.y = posY;
-    cells[x, y].transform.position = pos;
+    bases[x, y].transform.position = pos;
+    bases[x, y].color = blocks.black;
+  }
+  void CreateWall(float posX, float posY) {
+    SpriteRenderer sp = Instantiate(prfbCell)
+      .GetComponent<SpriteRenderer>();
+    Vector2 pos = sp.transform.position;
+    pos.x = posX; pos.y = posY;
+    sp.transform.position = pos;
+    sp.color = blocks.gray;
+    walls.Add(sp);
   }
   internal void Init(Controller c) {
     blocks.Init(); next.Init(); ctrl = c;
-    //-> Init cells and board
+    //-> Init board and cell
     float posX, posY;
-    for (int x = 0; x < 12; x++) {
-      posX = -1.955f + (x * 0.355f);
-      for (int y = 0; y < 23; y++) {
-        posY = -3.790f + (y * 0.355f);
-        InitCell(x, y, posX, posY);
-        if (y == 0) {
+    for (int y = 0; y < 22; y++) {
+      posY = -3.790f + (y * 0.355f);
+      for (int x = 0; x < 12; x++) {
+        posX = -1.955f + (x * 0.355f);
+        CreateBase(x, y, posX, posY);
+        if (x == 0 || x == 11 || y == 0) {
           board[x, y] = wall;
-          cells[x, y].color = blocks.gray;
-        } else if (x == 0 || x == 11) {
-          board[x, y] = wall;
-          if (y == 22) cells[x, y].gameObject.SetActive(false); // hide
-          else cells[x, y].color = blocks.gray;
+          CreateWall(posX, posY);
+        } else if (y == 21) {
+          board[x, y] = empty;
+          CreateWall(posX, posY);
         } else {
           board[x, y] = empty;
-          cells[x, y].color = blocks.black;
-          if (y == 21) {
-            border[x - 1] = Instantiate(prfbCell)
-              .GetComponent<SpriteRenderer>();
-            Vector2 pos = border[x - 1].transform.position;
-            pos.x = posX; pos.y = posY;
-            border[x - 1].transform.position = pos;
-            border[x - 1].color = blocks.gray;
-            border[x - 1].color
-              = new Color(blocks.gray.r, blocks.gray.g, blocks.gray.b, 0.7f);
-          } else if (y == 22) {
-            cells[x, y].gameObject.SetActive(false); // hide
-          }
         }
       }
+    }
+    for (int x = 0; x < 12; x++) {
+      board[x, 22] = empty; // not displayed
     }
     NextBlock();
     FixBlock();
@@ -114,7 +111,7 @@ public class Board : MonoBehaviour {
   }
 
   internal void RotateBlock() {
-    if (id == o) return; // no rotations
+    if (id == o) return; // no rotation
     int nr = blocks.Rotate(id, rotate);
     XY[] r = blocks.Relatives(id, nr);
     HideBlock();
@@ -127,6 +124,7 @@ public class Board : MonoBehaviour {
       for (int x = 1; x < 11; x++) {
         if (board[x, y] == empty) {
           flag = false;
+          break;
         }
       }
       if (flag) {
@@ -154,10 +152,11 @@ public class Board : MonoBehaviour {
     FixBlock();
   }
   internal void Render() {
+    //-> only inside wall
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
         int i = board[x, y];
-        cells[x, y].color = blocks.colors[i];
+        bases[x, y].color = blocks.colors[i];
       }
     }
   }
