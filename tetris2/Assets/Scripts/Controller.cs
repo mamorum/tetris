@@ -34,7 +34,7 @@ public class Controller : MonoBehaviour {
       if (preInput == right) return;
       board.MoveBlock(1, 0);
       preInput = right;
-    } else if (Input.GetButton("Jump")) { // Space or Y
+    } else if (Input.GetButton("Fire3")) { // Space or Y
       if (preInput == rotate) return;
       board.RotateBlock();
       preInput = rotate;

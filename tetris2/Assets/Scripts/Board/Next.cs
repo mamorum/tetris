@@ -49,4 +49,7 @@ public class Next {
     }
     return next1;
   }
+  internal int[] Queue() {
+    return queue1;
+  }
 }
