@@ -34,10 +34,12 @@ public class Controller : MonoBehaviour {
       if (preInput == right) return;
       board.MoveBlock(1, 0);
       preInput = right;
-    } else if (Input.GetButton("Fire3")) { // Space or Y
+    } else if (Input.GetButton("Fire3")) { // Space or 〇
       if (preInput == rotate) return;
       board.RotateBlock();
       preInput = rotate;
+    } else if (Input.GetButton("Jump")) { // H or △
+      // TODO: ホールドを実装
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       if (dropped && preInput == down) return;
       frame += drop / 2; // speed up
