@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Next {
+public class Next : MonoBehaviour {
   static int[] drops = Blocks.drops;
   static int
     len = drops.Length,

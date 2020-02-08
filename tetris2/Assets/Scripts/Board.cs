@@ -21,7 +21,7 @@ public class Board : MonoBehaviour {
   //-> objects
   public GameObject prfbCell;
   public Blocks blocks;
-  Next next = new Next();
+  public Next next;
   Controller ctrl;
   void CreateCell(
     SpriteRenderer[,] sr, int x, int y, float posX, float posY
