@@ -16,12 +16,11 @@ public class Next {
   }
   void ShuffleTo(int[] queue) {
     //-> shuffle
-    int j;
-    for (int i = drops.Length - 1; i > 0; i--) {
-      j = Random.Range(0, i + 1);
-      swap = drops[i];
-      drops[i] = drops[j];
-      drops[j] = swap;
+    for (int i, j = drops.Length - 1; j > 0; j--) {
+      i = Random.Range(0, j + 1);
+      swap = drops[j];
+      drops[j] = drops[i];
+      drops[i] = swap;
     }
     //-> deep copy
     for (int i = 0; i < drops.Length; i++) {
