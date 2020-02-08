@@ -121,6 +121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 401413901}
+  - component: {fileID: 401413902}
   m_Layer: 5
   m_Name: Cell
   m_TagString: Untagged
@@ -147,6 +148,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &401413902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401413900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30383d541f86cb94b92809fdb71a7df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prfbCell: {fileID: 1132989150358713174, guid: 2443e3148cc565c4cb02de6aceab6615,
+    type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,6 +296,7 @@ MonoBehaviour:
   indigo: {r: 0.24705882, g: 0.31764707, b: 0.70980394, a: 1}
   orange: {r: 1, g: 0.59607846, b: 0, a: 1}
   purple: {r: 0.70980394, g: 0.23921569, b: 0.76862746, a: 1}
+  colors: []
 --- !u!1 &968055576
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,7 +340,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 389b4f4cc532efe44b152349d243ff7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blocks: {fileID: 827844643}
+  cell: {fileID: 401413902}
   board: {fileID: 1421841767}
+  next: {fileID: 1768463884}
 --- !u!1 &996789544
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,10 +663,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c14cca34fa5783439a06f553905a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prfbCell: {fileID: 1132989150358713174, guid: 2443e3148cc565c4cb02de6aceab6615,
-    type: 3}
-  blocks: {fileID: 827844643}
-  next: {fileID: 1768463884}
 --- !u!1 &1768463882
 GameObject:
   m_ObjectHideFlags: 0

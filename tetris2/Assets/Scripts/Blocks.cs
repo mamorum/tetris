@@ -34,15 +34,14 @@ public class Blocks : MonoBehaviour {
     null, null, //-> empty, wall
     rI, rO, rS, rZ, rJ, rL, rT };
   //-> id
-  internal static int
+  internal readonly int
     empty = 0, wall = 1,
     i = 2, o = 3, s = 4, z = 5, j = 6, l = 7, t = 8;
-  internal static int[] drops = new int[] { i, o, s, z, j, l, t };
   //-> color
   public Color
     black, gray, //-> empty, wall
     blue, yellow, green, red, indigo, orange, purple; // i, o, s, z, j, l, t
-  internal Color[] colors;
+  public Color[] colors;
   internal void Init() {
     colors = new Color[] {
       black, gray, //-> empty, wall

@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
+  public Blocks blocks;
+  public Cell cell;
   public Board board;
+  public Next next;
   void Start() {
+    blocks.Init();
     board.Init(this);
     board.Render();
   }
