@@ -19,7 +19,7 @@ public class Next : MonoBehaviour {
       posY = baseY + (y * 0.355f);
       for (int x = 0; x < 5; x++) {
         posX = baseX + (x * 0.355f);
-        queues[x, y] = cell.Create(posX, posY, blocks.black);
+        queues[x, y] = cell.Empty(posX, posY);
       }
     }
     //-> ids, queues

@@ -31,23 +31,12 @@ public class Blocks : MonoBehaviour {
     new XY[] { new XY(0, -1), new XY(-1, 0), new XY(0, 1) },
     new XY[] { new XY(-1, 0), new XY(1, 0), new XY(0, 1) }};
   static XY[][][] relatives = new XY[][][] {
-    null, null, //-> empty, wall
-    rI, rO, rS, rZ, rJ, rL, rT };
-  //-> id
+    null, null, rI, rO, rS, rZ, rJ, rL, rT //-> empty, wall, i, o, s, z, j, l, t 
+  };
+  //-> id, color
   internal readonly int
-    empty = 0, wall = 1,
-    i = 2, o = 3, s = 4, z = 5, j = 6, l = 7, t = 8;
-  //-> color
-  public Color
-    black, gray, //-> empty, wall
-    blue, yellow, green, red, indigo, orange, purple; // i, o, s, z, j, l, t
-  public Color[] colors;
-  internal void Init() {
-    colors = new Color[] {
-      black, gray, //-> empty, wall
-      blue, yellow, green, red, indigo, orange, purple // i, o, s, z, j, l, t
-    };
-  }
+    empty=0, wall=1, i=2, o=3, s=4, z=5, j=6, l=7, t=8;
+  public Color[] colors; // empty, wall, i, o, s, z, j, l, t
   internal int DefaultRotate(int id) {
     XY[][] r = relatives[id];
     return r.Length - 1; // last index

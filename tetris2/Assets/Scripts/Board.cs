@@ -25,13 +25,13 @@ public class Board : MonoBehaviour {
       posY = baseY + (y * 0.355f);
       for (int x = 0; x < 12; x++) {
         posX = baseX + (x * 0.355f);
-        bases[x, y] = cell.Create(posX, posY, blocks.black);
+        bases[x, y] = cell.Empty(posX, posY);
         if (x == 11 || x == 0 || y == 0) {
           board[x, y] = blocks.wall;
-          walls.Add(cell.Create(posX, posY, blocks.gray));
+          walls.Add(cell.Wall(posX, posY));
         } else if (y == 21) {
           board[x, y] = blocks.empty;
-          walls.Add(cell.Create(posX, posY, blocks.gray));
+          walls.Add(cell.Wall(posX, posY));
         } else {
           board[x, y] = blocks.empty;
         }

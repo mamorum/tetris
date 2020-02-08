@@ -8,7 +8,7 @@ public class Controller : MonoBehaviour {
   public Board board;
   public Next next;
   void Start() {
-    blocks.Init();
+    cell.Init(this);
     board.Init(this);
     board.Render();
   }
