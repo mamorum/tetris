@@ -3,40 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Blocks : MonoBehaviour {
-  //-> relative points (last indexes are default rotation.)
-  static XY[][] rI = new XY[][] {
+  //-> relative points (each last index is default rotation.)
+  static readonly XY[][] rI = new XY[][] {
     new XY[] { new XY(0, -1), new XY(0, 1), new XY(0, 2) },
     new XY[] { new XY(-1, 0), new XY(1, 0), new XY(2, 0) }};
-  static XY[][] rO = new XY[][] {
+  static readonly XY[][] rO = new XY[][] {
     new XY[] { new XY(1, 0), new XY(0, 1), new XY(1, 1) }};
-  static XY[][] rS = new XY[][] {
+  static readonly XY[][] rS = new XY[][] {
     new XY[] { new XY(1, -1), new XY(1, 0), new XY(0, 1) },
     new XY[] { new XY(-1, 0), new XY(1, 1), new XY(0, 1) }};
-  static XY[][] rZ = new XY[][] {
+  static readonly XY[][] rZ = new XY[][] {
     new XY[] { new XY(0, -1), new XY(1, 0), new XY(1, 1) },
     new XY[] { new XY(1, 0), new XY(-1, 1), new XY(0, 1) }};
-  static XY[][] rJ = new XY[][] {
+  static readonly XY[][] rJ = new XY[][] {
     new XY[] { new XY(0, -1), new XY(0, 1), new XY(1, 1) },
     new XY[] { new XY(1, -1), new XY(1, 0), new XY(-1, 0) },
     new XY[] { new XY(-1, -1), new XY(0, -1), new XY(0, 1) },
     new XY[] { new XY(-1, 0), new XY(1, 0), new XY(-1, 1) }};
-  static XY[][] rL = new XY[][] {
+  static readonly XY[][] rL = new XY[][] {
     new XY[] { new XY(0, -1), new XY(1, -1), new XY(0, 1) },
     new XY[] { new XY(-1, -1), new XY(-1, 0), new XY(1, 0) },
     new XY[] { new XY(0, -1), new XY(-1, 1), new XY(0, 1) },
     new XY[] { new XY(-1, 0), new XY(1, 0), new XY(1, 1) }};
-  static XY[][] rT = new XY[][] {
+  static readonly XY[][] rT = new XY[][] {
     new XY[] { new XY(0, -1), new XY(1, 0), new XY(0, 1) },
     new XY[] { new XY(0, -1), new XY(-1, 0), new XY(1, 0) },
     new XY[] { new XY(0, -1), new XY(-1, 0), new XY(0, 1) },
     new XY[] { new XY(-1, 0), new XY(1, 0), new XY(0, 1) }};
-  static XY[][][] relatives = new XY[][][] {
-    null, null, rI, rO, rS, rZ, rJ, rL, rT //-> empty, wall, i, o, s, z, j, l, t 
-  };
-  //-> id, color
+  static readonly XY[][][] relatives = new XY[][][] {
+    null, null, rI, rO, rS, rZ, rJ, rL, rT }; // empty, wall, i, o, s, z, j, l, t 
+  //-> color, id, 
+  public Color[] colors; // empty, wall, i, o, s, z, j, l, t
   internal readonly int
     empty=0, wall=1, i=2, o=3, s=4, z=5, j=6, l=7, t=8;
-  public Color[] colors; // empty, wall, i, o, s, z, j, l, t
   internal int DefaultRotate(int id) {
     XY[][] r = relatives[id];
     return r.Length - 1; // last index
