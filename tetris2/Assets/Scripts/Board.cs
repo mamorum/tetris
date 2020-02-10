@@ -11,9 +11,11 @@ public class Board : MonoBehaviour {
   int x, y, id, rotate;
   bool moved = false;
   //-> objects
-  Controller ctrl; Cell cell; Blocks blocks; Next next;
+  Controller ctrl; Cell cell;
+  Blocks blocks; Hold hold; Next next;
   internal void Init(Controller c) {
-    ctrl = c; cell = c.cell; blocks = c.blocks; next = c.next;
+    ctrl = c; cell = c.cell; blocks = c.blocks;
+    hold = c.hold; next = c.next;
     //-> top of the board (not displayed.)
     for (int x = 0; x < 12; x++) {
       board[x, 22] = blocks.empty;
@@ -37,13 +39,14 @@ public class Board : MonoBehaviour {
         }
       }
     }
+    hold.Init(c);
     next.Init(c, baseY, posX);
-    NextBlock();
+    id = next.Id();
+    PutBlock();
     FixBlock();
   }
-  void NextBlock() {
+  void PutBlock() {
     x = 5; y = 20;
-    id = next.Id();
     rotate = blocks.DefaultRotate(id);
   }
   void FixBlock() {
@@ -99,6 +102,16 @@ public class Board : MonoBehaviour {
     if (IsEmpty(x, y, r)) rotate = nr;
     FixBlock();
   }
+  internal void Hold() {
+    HideBlock();
+    id = hold.Add(id);
+    if (id == blocks.empty) {
+      id = next.Id(); // first time
+    }
+    hold.Render();
+    PutBlock();
+    FixBlock();
+  }
   void DeleteLine() {
     for (int y = 1; y < 22; y++) {
       bool flag = true;
@@ -127,8 +140,9 @@ public class Board : MonoBehaviour {
     if (moved) return;
     //-> dropped
     ctrl.dropped = true;
+    id = next.Id();
     DeleteLine();
-    NextBlock();
+    PutBlock();
     CheckEnd();
     FixBlock();
   }

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public Blocks blocks;
-  public Cell cell;
-  public Board board;
+  public Blocks blocks; public Cell cell;
+  public Board board; public Hold hold;
   public Next next;
   void Start() {
     cell.Init(this);
@@ -16,8 +15,8 @@ public class Controller : MonoBehaviour {
   int frame = 0, drop = 60;
   void Update() {
     if (end) return;
-    ProcessInput();
     frame++;
+    ProcessInput();
     if (frame >= drop) {
       board.Drop();
       frame = 0;
@@ -26,7 +25,7 @@ public class Controller : MonoBehaviour {
   }
   //-> process input
   readonly int
-    left = 1, right = 2, rotate = 3, down = 4;
+    left = 1, right = 2, rotate = 3, hld = 4, down = 5;
   int preInput = 0;
   internal bool dropped = false;
   internal void ProcessInput() {
@@ -43,7 +42,10 @@ public class Controller : MonoBehaviour {
       board.RotateBlock();
       preInput = rotate;
     } else if (Input.GetButton("Jump")) { // H or △
-      // TODO: ホールドを実装
+      if (preInput == hld) return;
+      frame = 0;
+      board.Hold();
+      preInput = hld;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       if (dropped && preInput == down) return;
       frame += drop / 2; // speed up

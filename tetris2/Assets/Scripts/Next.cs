@@ -66,7 +66,6 @@ public class Next : MonoBehaviour {
     }
     return next1;
   }
-  //-> for rendering
   internal void Render() {
     //-> reset
     for (int y = 0; y < 19; y++) {
