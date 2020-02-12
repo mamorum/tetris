@@ -12,7 +12,8 @@ public class Controller : MonoBehaviour {
     board.Render();
   }
   internal bool end = false;
-  int frame = 0, drop = 60;
+  internal int frame = 0;
+  int drop = 60;
   void Update() {
     if (end) return;
     frame++;
@@ -43,7 +44,6 @@ public class Controller : MonoBehaviour {
       preInput = rotate;
     } else if (Input.GetButton("Jump")) { // H or △
       if (preInput == hld) return;
-      frame = 0;
       board.Hold();
       preInput = hld;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down

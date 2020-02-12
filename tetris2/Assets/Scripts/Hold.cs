@@ -6,11 +6,11 @@ public class Hold : MonoBehaviour {
   //-> cell
   static int[,] boardH = new int[4, 2];
   static SpriteRenderer[,] cells = new SpriteRenderer[4, 2];
-  bool held = false;
-  int hold; // id
-  Blocks blocks; Cell cell;
+  int id; Blocks blocks; Cell cell;
+  internal bool used = false;
   internal void Init(Controller c) {
     blocks = c.blocks; cell = c.cell;
+    id = blocks.empty;
     //-> cell
     float posX, posY;
     float baseX = -3.73f, baseY = 2.245f;
@@ -22,16 +22,10 @@ public class Hold : MonoBehaviour {
       }
     }
   }
-  internal int Add(int id) {
-    int r = blocks.empty;
-    if (held) {
-      r = hold;
-      hold = id;
-    } else { // first time
-      held = true;
-      hold = id;
-    }
-    return r;
+  internal int Replace(int blockId) {
+    int held = id;
+    id = blockId;
+    return held;
   }
   internal void Render() {
     //-> reset
@@ -42,12 +36,12 @@ public class Hold : MonoBehaviour {
     }
     //-> put id
     int hX = 2, hY = 0;
-    if (hold == blocks.i) { hX--; hY++; }
-    boardH[hX, hY] = hold;
-    int routate = blocks.DefaultRotate(hold);
-    XY[] r = blocks.Relatives(hold, routate);
+    if (id == blocks.i) { hX--; hY++; }
+    boardH[hX, hY] = id;
+    int routate = blocks.DefaultRotate(id);
+    XY[] r = blocks.Relatives(id, routate);
     for (int j = 0; j < r.Length; j++) {
-      boardH[hX + r[j].x, hY + r[j].y] = hold;
+      boardH[hX + r[j].x, hY + r[j].y] = id;
     }
     //-> color
     for (int y = 0; y < 2; y++) {

@@ -103,17 +103,20 @@ public class Board : MonoBehaviour {
     FixBlock();
   }
   internal void Hold() {
+    if (hold.used) return;
     HideBlock();
-    id = hold.Add(id);
+    id = hold.Replace(id);
     if (id == blocks.empty) {
       id = next.Id(); // first time
     }
+    ctrl.frame = 0;
+    hold.used = true;
     hold.Render();
     PutBlock();
     FixBlock();
   }
   void DeleteLine() {
-    for (int y = 1; y < 22; y++) {
+    for (int y = 1; y < 21; y++) {
       bool flag = true;
       for (int x = 1; x < 11; x++) {
         if (board[x, y] == blocks.empty) {
@@ -122,7 +125,7 @@ public class Board : MonoBehaviour {
         }
       }
       if (flag) {
-        for (int j = y; j < 22; j++) {
+        for (int j = y; j < 21; j++) {
           for (int i = 1; i < 11; i++) {
             board[i, j] = board[i, j + 1];
           }
@@ -140,6 +143,7 @@ public class Board : MonoBehaviour {
     if (moved) return;
     //-> dropped
     ctrl.dropped = true;
+    hold.used = false;
     id = next.Id();
     DeleteLine();
     PutBlock();
@@ -147,7 +151,6 @@ public class Board : MonoBehaviour {
     FixBlock();
   }
   internal void Render() {
-    //-> only inside wall
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
         int i = board[x, y];
