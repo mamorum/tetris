@@ -2,45 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : MonoBehaviour {
+public class Board {
   //-> board cell
-  static int[,] board = new int[12, 23];
-  static SpriteRenderer[,] bases = new SpriteRenderer[12, 22];
-  static List<SpriteRenderer> walls = new List<SpriteRenderer>();
+  int[,] grid; SpriteRenderer[,] cells;
   //-> status
   int x, y, id, rotate;
   bool moved = false;
   //-> objects
-  Controller ctrl; Cell cell;
-  Blocks blocks; Hold hold; Next next;
+  Controller ctrl; Blocks blocks;
+  Hold hold; Next next;
   internal void Init(Controller c) {
-    ctrl = c; cell = c.cell; blocks = c.blocks;
-    hold = c.hold; next = c.next;
-    //-> top of the board (not displayed.)
-    for (int x = 0; x < 12; x++) {
-      board[x, 22] = blocks.empty;
-    }
-    //-> cell and board
-    float posX = 0, posY;
-    float baseX = -1.955f, baseY = -3.790f;
-    for (int y = 0; y < 22; y++) {
-      posY = baseY + (y * 0.355f);
-      for (int x = 0; x < 12; x++) {
-        posX = baseX + (x * 0.355f);
-        bases[x, y] = cell.Empty(posX, posY);
-        if (x == 11 || x == 0 || y == 0) {
-          board[x, y] = blocks.wall;
-          walls.Add(cell.Wall(posX, posY));
-        } else if (y == 21) {
-          board[x, y] = blocks.empty;
-          walls.Add(cell.Wall(posX, posY));
-        } else {
-          board[x, y] = blocks.empty;
-        }
-      }
-    }
-    hold.Init(c);
-    next.Init(c, baseY, posX);
+    grid = c.grids.main;
+    cells = c.grids.mCells;
+    ctrl = c; blocks = c.blocks;
+    hold = c.hold; next = c.next;    
+    hold.Init(c); next.Init(c);
     id = next.Id();
     PutBlock();
     FixBlock();
@@ -50,30 +26,30 @@ public class Board : MonoBehaviour {
     rotate = blocks.DefaultRotate(id);
   }
   void FixBlock() {
-    board[x, y] = id;
+    grid[x, y] = id;
     XY[] r = blocks.Relatives(id, rotate);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      board[x + cx, y + cy] = id;
+      grid[x + cx, y + cy] = id;
     }
   }
   void HideBlock() {
-    board[x, y] = blocks.empty;
+    grid[x, y] = blocks.empty;
     XY[] r = blocks.Relatives(id, rotate);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      board[x + cx, y + cy] = blocks.empty;
+      grid[x + cx, y + cy] = blocks.empty;
     }
   }
   bool IsEmpty(int tX, int tY, XY[] r) {
-    int b = board[tX, tY];
+    int b = grid[tX, tY];
     if (b != blocks.empty) return false;
     int rX, rY;
     for (int i = 0; i < r.Length; i++) {
       rX = r[i].x; rY = r[i].y;
-      b = board[tX + rX, tY + rY];
+      b = grid[tX + rX, tY + rY];
       if (b != blocks.empty) {
         return false;
       }
@@ -106,7 +82,7 @@ public class Board : MonoBehaviour {
     if (hold.used) return;
     HideBlock();
     id = hold.Replace(id);
-    if (id == blocks.empty) {
+    if (hold.IsEmpty(id)) {
       id = next.Id(); // first time
     }
     ctrl.frame = 0;
@@ -119,7 +95,7 @@ public class Board : MonoBehaviour {
     for (int y = 1; y < 21; y++) {
       bool flag = true;
       for (int x = 1; x < 11; x++) {
-        if (board[x, y] == blocks.empty) {
+        if (grid[x, y] == blocks.empty) {
           flag = false;
           break;
         }
@@ -127,7 +103,7 @@ public class Board : MonoBehaviour {
       if (flag) {
         for (int j = y; j < 21; j++) {
           for (int i = 1; i < 11; i++) {
-            board[i, j] = board[i, j + 1];
+            grid[i, j] = grid[i, j + 1];
           }
         }
         y--;
@@ -153,8 +129,8 @@ public class Board : MonoBehaviour {
   internal void Render() {
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
-        int i = board[x, y];
-        bases[x, y].color = blocks.colors[i];
+        int i = grid[x, y];
+        cells[x, y].color = blocks.colors[i];
       }
     }
     next.Render();

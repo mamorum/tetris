@@ -2,47 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Next : MonoBehaviour {
-  //-> cell
-  static int[,] nexts = new int[5, 19];
-  static SpriteRenderer[,] queues = new SpriteRenderer[5, 19];
-  //-> block ids and queues
+public class Next {
+  int[,] grid; SpriteRenderer[,] cells;
   int[] ids, queue1, queue2;    
   int count = 0, swap;
-  Cell cell; Blocks blocks;
-  internal void Init(Controller c, float baseY, float posX) {
-    cell = c.cell; blocks = c.blocks;
-    //-> cell
-    float posY;
-    float baseX = posX + 0.355f;
-    for (int y = 0; y < 19; y++) {
-      posY = baseY + (y * 0.355f);
-      for (int x = 0; x < 5; x++) {
-        posX = baseX + (x * 0.355f);
-        queues[x, y] = cell.Empty(posX, posY);
-      }
-    }
-    //-> ids, queues
+  Blocks blocks;
+  internal void Init(Controller c) {
+    blocks = c.blocks;
+    grid = c.grids.next;
+    cells = c.grids.nCells;
+    //-> create block ids
     ids = new int[] {
       blocks.i, blocks.o, blocks.s, blocks.z,
       blocks.j, blocks.l, blocks.t
     };
+    //-> create queues
     queue1 = new int[ids.Length];
     queue2 = new int[ids.Length];
-    Shuffle(queue1);
-    Shuffle(queue2);
+    Shuffle(ids, queue1);
+    Shuffle(ids, queue2);
   }
-  void Shuffle(int[] queue) {
+  void Shuffle(int[] from, int[] to) {
     //-> shuffle
-    for (int i, j = ids.Length - 1; j > 0; j--) {
+    for (int i, j = from.Length - 1; j > 0; j--) {
       i = Random.Range(0, j + 1);
-      swap = ids[j];
-      ids[j] = ids[i];
-      ids[i] = swap;
+      swap = from[j];
+      from[j] = from[i];
+      from[i] = swap;
     }
     //-> deep copy
-    for (int i = 0; i < ids.Length; i++) {
-      queue[i] = ids[i];
+    for (int i = 0; i < from.Length; i++) {
+      to[i] = from[i];
     }
   }
   int Dequeue(int[] queue) {
@@ -61,38 +51,38 @@ public class Next : MonoBehaviour {
     Enqueue(next2, queue1);
     count++;
     if (count == ids.Length) {
-      Shuffle(queue2);
+      Shuffle(ids, queue2);
       count = 0;
     }
     return next1;
   }
   internal void Render() {
     //-> reset
-    for (int y = 0; y < 19; y++) {
-      for (int x = 0; x < 5; x++) {
-        nexts[x, y] = 0;
+    for (int y = 0; y < 10; y++) {
+      for (int x = 0; x < 4; x++) {
+        grid[x, y] = 0;
       }
     }
     //-> id
-    int nid, nrt, nx, ny = 17;
+    int nid, nrt, nx, ny = 8;
     for (int i = 0; i < 3; i++) {
       nid = queue1[i];
       nrt = blocks.DefaultRotate(nid);
       if (nid == blocks.i) ny++;
-      if (nid == blocks.o) nx = 1;
-      else nx = 2;
-      nexts[nx, ny] = nid;
+      if (nid == blocks.o) nx = 0;
+      else nx = 1;
+      grid[nx, ny] = nid;
       XY[] r = blocks.Relatives(nid, nrt);
       for (int j = 0; j < r.Length; j++) {
-        nexts[nx + r[j].x, ny + r[j].y] = nid;
+        grid[nx + r[j].x, ny + r[j].y] = nid;
       }
       ny = ny - 4;
     }
     //-> color
-    for (int y = 0; y < 19; y++) {
-      for (int x = 0; x < 5; x++) {
-        int i = nexts[x, y];
-        queues[x, y].color = blocks.colors[i];
+    for (int y = 0; y < 10; y++) {
+      for (int x = 0; x < 4; x++) {
+        int i = grid[x, y];
+        cells[x, y].color = blocks.colors[i];
       }
     }
   }

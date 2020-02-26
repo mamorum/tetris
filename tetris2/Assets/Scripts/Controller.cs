@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public Blocks blocks; public Cell cell;
-  public Board board; public Hold hold;
-  public Next next;
+  public Blocks blocks; public Grids grids;
+  Board board = new Board();
+  internal Next next = new Next();
+  internal Hold hold = new Hold();
   void Start() {
-    cell.Init(this);
+    grids.Init(this);
     board.Init(this);
     board.Render();
   }
