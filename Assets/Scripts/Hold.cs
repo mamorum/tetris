@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Hold {
-  int[,] grid; SpriteRenderer[,] cells;
+  SpriteRenderer[,] cells;
   Blocks blocks;
   int x, y, id, rotate;
   internal bool used;
   internal void Init(Controller c) {
     blocks = c.blocks;
-    grid = c.grids.hold;
     cells = c.grids.hCells;
     id = blocks.empty;
     used = false;
@@ -25,21 +24,18 @@ public class Hold {
     return held;
   }
   void Hide() {
-    grid[x, y] = blocks.empty;
     cells[x, y].color = blocks.colors[blocks.empty];
     //-> relatives
     XY[] r = blocks.Relatives(id, rotate);
     int rx, ry;
     for (int i = 0; i < r.Length; i++) {
       rx = x + r[i].x; ry = y + r[i].y;
-      grid[rx, ry] = blocks.empty;
       cells[rx, ry].color = blocks.colors[blocks.empty];
     }
   }
   internal void Show() {
     if (id == blocks.i) { x = 1; y = 1; }
     else { x = 2; y = 0; }
-    grid[x, y] = id;
     cells[x, y].color = blocks.colors[id];
     //-> relatives
     rotate = blocks.DefaultRotate(id);
@@ -47,7 +43,6 @@ public class Hold {
     int rx, ry;
     for (int j = 0; j < r.Length; j++) {
       rx = x + r[j].x; ry = y + r[j].y;
-      grid[rx, ry] = id;
       cells[rx, ry].color = blocks.colors[id];
     }
   }
