@@ -36,6 +36,8 @@ public class Blocks : MonoBehaviour {
   public Color[] colors; // empty, wall, i, o, s, z, j, l, t
   internal readonly int
     empty=0, wall=1, i=2, o=3, s=4, z=5, j=6, l=7, t=8;
+  internal Color Empty() { return colors[empty]; }
+  internal Color Wall() { return colors[wall]; }
   internal int DefaultRotate(int id) {
     XY[][] r = relatives[id];
     return r.Length - 1; // last index

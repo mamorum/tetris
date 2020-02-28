@@ -3,47 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Hold {
-  SpriteRenderer[,] cells;
   Blocks blocks;
-  int x, y, id, rotate;
+  SpriteRenderer[,] cells;
+  Status s = new Status();
   internal bool used;
   internal void Init(Controller c) {
     blocks = c.blocks;
-    cells = c.grids.hCells;
-    id = blocks.empty;
+    cells = c.grids.hCells;    
+    s.id = blocks.empty;
     used = false;
   }
   internal bool IsEmpty(int blockId) {
     return (blockId == blocks.empty);
   }
   internal int Replace(int blockId) {
-    if (!IsEmpty(id)) Hide();
-    int held = id;
-    id = blockId;
+    if (!IsEmpty(s.id)) Hide();
+    int held = s.id;
+    s.id = blockId;
     Show();
     return held;
   }
   void Hide() {
-    cells[x, y].color = blocks.colors[blocks.empty];
-    //-> relatives
-    XY[] r = blocks.Relatives(id, rotate);
+    cells[s.x, s.y].color = blocks.Empty();
+    XY[] r = blocks.Relatives(s.id, s.rotate);
     int rx, ry;
     for (int i = 0; i < r.Length; i++) {
-      rx = x + r[i].x; ry = y + r[i].y;
-      cells[rx, ry].color = blocks.colors[blocks.empty];
+      rx = s.x + r[i].x; ry = s.y + r[i].y;
+      cells[rx, ry].color = blocks.Empty();
     }
   }
   internal void Show() {
-    if (id == blocks.i) { x = 1; y = 1; }
-    else { x = 2; y = 0; }
-    cells[x, y].color = blocks.colors[id];
-    //-> relatives
-    rotate = blocks.DefaultRotate(id);
-    XY[] r = blocks.Relatives(id, rotate);
+    if (s.id == blocks.i) s.XY(1, 1);
+    else s.XY(2, 0);
+    cells[s.x, s.y].color = blocks.colors[s.id];
+    s.rotate = blocks.DefaultRotate(s.id);
+    XY[] r = blocks.Relatives(s.id, s.rotate);
     int rx, ry;
     for (int j = 0; j < r.Length; j++) {
-      rx = x + r[j].x; ry = y + r[j].y;
-      cells[rx, ry].color = blocks.colors[id];
+      rx = s.x + r[j].x; ry = s.y + r[j].y;
+      cells[rx, ry].color = blocks.colors[s.id];
     }
   }
 }

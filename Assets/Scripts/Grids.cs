@@ -70,11 +70,9 @@ public class Grids : MonoBehaviour {
     return s;
   }
   internal SpriteRenderer Empty(float x, float y) {
-    Color c = blocks.colors[blocks.empty];
-    return Create(x, y, c);
+    return Create(x, y, blocks.Empty());
   }
   internal SpriteRenderer Wall(float x, float y) {
-    Color c = blocks.colors[blocks.wall];
-    return Create(x, y, c);
+    return Create(x, y, blocks.Wall());
   }
 }
