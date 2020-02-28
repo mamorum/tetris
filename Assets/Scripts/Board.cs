@@ -87,7 +87,6 @@ public class Board {
     }
     ctrl.frame = 0;
     hold.used = true;
-    hold.Render();
     PutBlock();
     FixBlock();
   }

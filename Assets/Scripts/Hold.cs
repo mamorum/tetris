@@ -5,7 +5,7 @@ using UnityEngine;
 public class Hold {
   int[,] grid; SpriteRenderer[,] cells;
   Blocks blocks;
-  internal int id;
+  int x, y, id, rotate;
   internal bool used;
   internal void Init(Controller c) {
     blocks = c.blocks;
@@ -18,32 +18,37 @@ public class Hold {
     return (blockId == blocks.empty);
   }
   internal int Replace(int blockId) {
+    if (!IsEmpty(id)) Hide();
     int held = id;
     id = blockId;
+    Show();
     return held;
   }
-  internal void Render() {
-    //-> reset
-    for (int y = 0; y < 2; y++) {
-      for (int x = 0; x < 4; x++) {
-        grid[x, y] = 0;
-      }
+  void Hide() {
+    grid[x, y] = blocks.empty;
+    cells[x, y].color = blocks.colors[blocks.empty];
+    //-> relatives
+    XY[] r = blocks.Relatives(id, rotate);
+    int rx, ry;
+    for (int i = 0; i < r.Length; i++) {
+      rx = x + r[i].x; ry = y + r[i].y;
+      grid[rx, ry] = blocks.empty;
+      cells[rx, ry].color = blocks.colors[blocks.empty];
     }
-    //-> put id
-    int hX = 2, hY = 0;
-    if (id == blocks.i) { hX--; hY++; }
-    grid[hX, hY] = id;
-    int routate = blocks.DefaultRotate(id);
-    XY[] r = blocks.Relatives(id, routate);
+  }
+  internal void Show() {
+    if (id == blocks.i) { x = 1; y = 1; }
+    else { x = 2; y = 0; }
+    grid[x, y] = id;
+    cells[x, y].color = blocks.colors[id];
+    //-> relatives
+    rotate = blocks.DefaultRotate(id);
+    XY[] r = blocks.Relatives(id, rotate);
+    int rx, ry;
     for (int j = 0; j < r.Length; j++) {
-      grid[hX + r[j].x, hY + r[j].y] = id;
-    }
-    //-> color
-    for (int y = 0; y < 2; y++) {
-      for (int x = 0; x < 4; x++) {
-        int i = grid[x, y];
-        cells[x, y].color = blocks.colors[i];
-      }
+      rx = x + r[j].x; ry = y + r[j].y;
+      grid[rx, ry] = id;
+      cells[rx, ry].color = blocks.colors[id];
     }
   }
 }
