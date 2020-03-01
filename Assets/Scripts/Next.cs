@@ -54,12 +54,12 @@ public class Next {
     queue[ids.Length - 1].id = i;
   }
   internal int Id() {
-    if (show) Hide();    
+    if (show) Hide();
+    else show = true;
     int next1 = Dequeue(queue1);
     int next2 = Dequeue(queue2);
     Enqueue(next2, queue1);
-    Show();
-    show = true;
+    Show();    
     count++;
     if (count == ids.Length) {
       Shuffle(ids, queue2);
