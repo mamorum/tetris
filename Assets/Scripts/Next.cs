@@ -85,12 +85,12 @@ public class Next {
     int rx, ry, ny = 8;
     for (int i = 0; i < 3; i++) {
       s = queue1[i];
-      s.rotate = blocks.DefaultRotate(s.id);
       if (s.id == blocks.o) s.x = 0;
       else s.x = 1;
       if (s.id == blocks.i) ny++;
       s.y = ny;
       cells[s.x, s.y].color = blocks.colors[s.id];
+      s.rotate = blocks.DefaultRotate(s.id);
       r = blocks.Relatives(s.id, s.rotate);
       for (int j = 0; j < r.Length; j++) {
         rx = s.x + r[j].x; ry = s.y + r[j].y;
