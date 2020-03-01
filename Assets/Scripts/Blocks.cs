@@ -32,10 +32,11 @@ public class Blocks : MonoBehaviour {
     new XY[] { new XY(-1, 0), new XY(1, 0), new XY(0, 1) }};
   static readonly XY[][][] relatives = new XY[][][] {
     null, null, rI, rO, rS, rZ, rJ, rL, rT }; // empty, wall, i, o, s, z, j, l, t 
-  //-> color, id, 
-  public Color[] colors; // empty, wall, i, o, s, z, j, l, t
+  //-> id
   internal readonly int
     empty=0, wall=1, i=2, o=3, s=4, z=5, j=6, l=7, t=8;
+  //-> color
+  public Color[] colors; // empty, wall, i, o, s, z, j, l, t
   internal Color Empty() { return colors[empty]; }
   internal Color Wall() { return colors[wall]; }
   internal int DefaultRotate(int id) {

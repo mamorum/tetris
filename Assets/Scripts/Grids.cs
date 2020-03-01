@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Grids : MonoBehaviour {
-  internal int[,]
-    main = new int[12, 23],
-    next = new int[4, 10],
-    hold = new int[4, 2];
+  internal int[,] main = new int[12, 23];
   internal SpriteRenderer[,]
     mCells = new SpriteRenderer[12, 22],
     nCells = new SpriteRenderer[4, 10],
@@ -55,7 +52,6 @@ public class Grids : MonoBehaviour {
       posY = baseY + (y * 0.355f);
       for (int x = 0; x < 4; x++) {
         posX = baseX + (x * 0.355f);
-        hold[x, y] = blocks.empty;
         hCells[x, y] = Empty(posX, posY);
       }
     }

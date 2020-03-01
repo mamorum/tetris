@@ -132,6 +132,5 @@ public class Board {
         cells[x, y].color = blocks.colors[i];
       }
     }
-    next.Render();
   }
 }
