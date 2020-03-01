@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Board {
-  //-> board cell
   int[,] grid; SpriteRenderer[,] cells;
-  //-> status
-  int x, y, id, rotate;
+  Status s = new Status();
   bool moved = false;
-  //-> objects
   Controller ctrl; Blocks blocks;
   Hold hold; Next next;
   internal void Init(Controller c) {
@@ -17,30 +14,30 @@ public class Board {
     ctrl = c; blocks = c.blocks;
     hold = c.hold; next = c.next;    
     hold.Init(c); next.Init(c);
-    id = next.Id();
+    s.id = next.Id();
     PutBlock();
     FixBlock();
   }
   void PutBlock() {
-    x = 5; y = 20;
-    rotate = blocks.DefaultRotate(id);
+    s.XY(5, 20);
+    s.rotate = blocks.DefaultRotate(s.id);
   }
   void FixBlock() {
-    grid[x, y] = id;
-    XY[] r = blocks.Relatives(id, rotate);
+    grid[s.x, s.y] = s.id;
+    XY[] r = blocks.Relatives(s.id, s.rotate);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      grid[x + cx, y + cy] = id;
+      grid[s.x + cx, s.y + cy] = s.id;
     }
   }
   void HideBlock() {
-    grid[x, y] = blocks.empty;
-    XY[] r = blocks.Relatives(id, rotate);
+    grid[s.x, s.y] = blocks.empty;
+    XY[] r = blocks.Relatives(s.id, s.rotate);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      grid[x + cx, y + cy] = blocks.empty;
+      grid[s.x + cx, s.y + cy] = blocks.empty;
     }
   }
   bool IsEmpty(int tX, int tY, XY[] r) {
@@ -58,32 +55,32 @@ public class Board {
   }
   internal void MoveBlock(int tX, int tY) {
     HideBlock();
-    int nx = x + tX;
-    int ny = y + tY;
+    int nx = s.x + tX;
+    int ny = s.y + tY;
     moved = false;
-    XY[] r = blocks.Relatives(id, rotate);
+    XY[] r = blocks.Relatives(s.id, s.rotate);
     if (IsEmpty(nx, ny, r)) {
-      x = nx;
-      y = ny;
+      s.x = nx;
+      s.y = ny;
       moved = true;
     }
     FixBlock();
   }
 
   internal void RotateBlock() {
-    if (id == blocks.o) return; // no rotation
-    int nr = blocks.Rotate(id, rotate);
-    XY[] r = blocks.Relatives(id, nr);
+    if (s.id == blocks.o) return; // no rotation
+    int nr = blocks.Rotate(s.id, s.rotate);
+    XY[] r = blocks.Relatives(s.id, nr);
     HideBlock();
-    if (IsEmpty(x, y, r)) rotate = nr;
+    if (IsEmpty(s.x, s.y, r)) s.rotate = nr;
     FixBlock();
   }
   internal void Hold() {
     if (hold.used) return;
     HideBlock();
-    id = hold.Replace(id);
-    if (hold.IsEmpty(id)) {
-      id = next.Id(); // first time
+    s.id = hold.Replace(s.id);
+    if (hold.IsEmpty(s.id)) {
+      s.id = next.Id(); // first time
     }
     ctrl.frame = 0;
     hold.used = true;
@@ -110,8 +107,8 @@ public class Board {
     }
   }
   void CheckEnd() {
-    XY[] r = blocks.Relatives(id, rotate);
-    if (!IsEmpty(x, y, r)) ctrl.end = true;
+    XY[] r = blocks.Relatives(s.id, s.rotate);
+    if (!IsEmpty(s.x, s.y, r)) ctrl.end = true;
   }
   internal void Drop() {
     MoveBlock(0, -1);
@@ -119,7 +116,7 @@ public class Board {
     //-> dropped
     ctrl.dropped = true;
     hold.used = false;
-    id = next.Id();
+    s.id = next.Id();
     DeleteLine();
     PutBlock();
     CheckEnd();
