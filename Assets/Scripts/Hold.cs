@@ -9,7 +9,7 @@ public class Hold {
   internal bool used;
   internal void Init(Controller c) {
     blocks = c.blocks;
-    cells = c.grids.hCells;    
+    cells = c.grids.hCells;
     s.id = blocks.empty;
     used = false;
   }
