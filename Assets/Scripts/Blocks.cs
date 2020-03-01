@@ -39,17 +39,20 @@ public class Blocks : MonoBehaviour {
   public Color[] colors; // empty, wall, i, o, s, z, j, l, t
   internal Color Empty() { return colors[empty]; }
   internal Color Wall() { return colors[wall]; }
-  internal int DefaultRotate(int id) {
+  int DefaultRotate(int id) {
     XY[][] r = relatives[id];
     return r.Length - 1; // last index
   }
-  internal int Rotate(int id, int rotate) {
-    int max = DefaultRotate(id);
-    if (max == rotate) return 0; // back to first
-    else return rotate + 1; // increment index
+  internal void ResetRotate(Status s) {
+    s.rotate = DefaultRotate(s.id);
   }
-  internal XY[] Relatives(int id, int rotate) {
-    XY[][] r = relatives[id];
-    return r[rotate];
+  internal void Rotate(Status s) {
+    int last = DefaultRotate(s.id);
+    if (last == s.rotate) s.rotate = 0;
+    else s.rotate++;
+  }
+  internal XY[] Relatives(Status s) {
+    XY[][] r = relatives[s.id];
+    return r[s.rotate];
   }
 }

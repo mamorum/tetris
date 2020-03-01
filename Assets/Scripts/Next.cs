@@ -73,7 +73,7 @@ public class Next {
     for (int j = 0; j < 3; j++) {
       s = queue1[j];
       cells[s.x, s.y].color = blocks.Empty();
-      r = blocks.Relatives(s.id, s.rotate);
+      r = blocks.Relatives(s);
       for (int i = 0; i < r.Length; i++) {
         rx = s.x + r[i].x; ry = s.y + r[i].y;
         cells[rx, ry].color = blocks.Empty();
@@ -90,8 +90,8 @@ public class Next {
       if (s.id == blocks.i) ny++;
       s.y = ny;
       cells[s.x, s.y].color = blocks.colors[s.id];
-      s.rotate = blocks.DefaultRotate(s.id);
-      r = blocks.Relatives(s.id, s.rotate);
+      blocks.ResetRotate(s);
+      r = blocks.Relatives(s);
       for (int j = 0; j < r.Length; j++) {
         rx = s.x + r[j].x; ry = s.y + r[j].y;
         cells[rx, ry].color = blocks.colors[s.id];

@@ -20,11 +20,11 @@ public class Board {
   }
   void PutBlock() {
     s.XY(5, 20);
-    s.rotate = blocks.DefaultRotate(s.id);
+    blocks.ResetRotate(s);
   }
   void FixBlock() {
     grid[s.x, s.y] = s.id;
-    XY[] r = blocks.Relatives(s.id, s.rotate);
+    XY[] r = blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
@@ -33,32 +33,32 @@ public class Board {
   }
   void HideBlock() {
     grid[s.x, s.y] = blocks.empty;
-    XY[] r = blocks.Relatives(s.id, s.rotate);
+    XY[] r = blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
       grid[s.x + cx, s.y + cy] = blocks.empty;
     }
   }
-  bool IsEmpty(int tX, int tY, XY[] r) {
-    int b = grid[tX, tY];
+  bool IsEmpty(int x, int y, XY[] r) {
+    int b = grid[x, y];
     if (b != blocks.empty) return false;
     int rX, rY;
     for (int i = 0; i < r.Length; i++) {
       rX = r[i].x; rY = r[i].y;
-      b = grid[tX + rX, tY + rY];
+      b = grid[x + rX, y + rY];
       if (b != blocks.empty) {
         return false;
       }
     }
     return true;
   }
-  internal void MoveBlock(int tX, int tY) {
+  internal void MoveBlock(int x, int y) {
     HideBlock();
-    int nx = s.x + tX;
-    int ny = s.y + tY;
+    int nx = s.x + x;
+    int ny = s.y + y;
     moved = false;
-    XY[] r = blocks.Relatives(s.id, s.rotate);
+    XY[] r = blocks.Relatives(s);
     if (IsEmpty(nx, ny, r)) {
       s.x = nx;
       s.y = ny;
@@ -68,11 +68,12 @@ public class Board {
   }
 
   internal void RotateBlock() {
-    if (s.id == blocks.o) return; // no rotation
-    int nr = blocks.Rotate(s.id, s.rotate);
-    XY[] r = blocks.Relatives(s.id, nr);
+    if (s.id == blocks.o) return; // none
     HideBlock();
-    if (IsEmpty(s.x, s.y, r)) s.rotate = nr;
+    int cr = s.rotate;
+    blocks.Rotate(s);
+    XY[] r = blocks.Relatives(s);
+    if (!IsEmpty(s.x, s.y, r)) s.rotate = cr;
     FixBlock();
   }
   internal void Hold() {
@@ -107,7 +108,7 @@ public class Board {
     }
   }
   void CheckEnd() {
-    XY[] r = blocks.Relatives(s.id, s.rotate);
+    XY[] r = blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) ctrl.end = true;
   }
   internal void Drop() {
