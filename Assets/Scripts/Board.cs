@@ -6,14 +6,12 @@ public class Board {
   bool moved = false;
   int[,] board; SpriteRenderer[,] cells;
   Status s = new Status();
-  Controller ctrl; Grids grids;
-  Hold hold; Next next;
-  internal void Init(Controller c) {
-    ctrl = c; grids = ctrl.grids;
-    board = grids.board; cells = grids.main;
-    hold = ctrl.hold; next = ctrl.next;    
-    hold.Init(c); next.Init(c);
-    s.id = next.Id();
+  Controller c;
+  internal void Init(Controller ct) {
+    c = ct;
+    board = c.grids.board;
+    cells = c.grids.main;
+    s.id = c.next.Id();
     PutBlock();
     FixBlock();
   }
@@ -76,14 +74,14 @@ public class Board {
     FixBlock();
   }
   internal void Hold() {
-    if (hold.used) return;
+    if (c.hold.used) return;
     HideBlock();
-    s.id = hold.Replace(s.id);
-    if (hold.IsEmpty(s.id)) {
-      s.id = next.Id(); // first time
+    s.id = c.hold.Replace(s.id);
+    if (c.hold.IsEmpty(s.id)) {
+      s.id = c.next.Id(); // first time
     }
-    ctrl.frame = 0;
-    hold.used = true;
+    c.frame = 0;
+    c.hold.used = true;
     PutBlock();
     FixBlock();
   }
@@ -108,15 +106,15 @@ public class Board {
   }
   void CheckEnd() {
     XY[] r = Blocks.Relatives(s);
-    if (!IsEmpty(s.x, s.y, r)) ctrl.end = true;
+    if (!IsEmpty(s.x, s.y, r)) c.end = true;
   }
   internal void Drop() {
     MoveBlock(0, -1);
     if (moved) return;
     //-> dropped
-    ctrl.dropped = true;
-    hold.used = false;
-    s.id = next.Id();
+    c.dropped = true;
+    c.hold.used = false;
+    s.id = c.next.Id();
     DeleteLine();
     PutBlock();
     CheckEnd();
@@ -126,7 +124,7 @@ public class Board {
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
         int i = board[x, y];
-        cells[x, y].color = grids.Color(i);
+        cells[x, y].color = c.colors.Get(i);
       }
     }
   }

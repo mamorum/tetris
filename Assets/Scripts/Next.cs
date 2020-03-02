@@ -7,10 +7,10 @@ public class Next {
   Status[] queue1, queue2;
   int[] ids; int count = 0, swap;
   bool show = false;
-  Grids grids;
-  internal void Init(Controller c) {
-    grids = c.grids;
-    cells = grids.next;
+  Controller c;
+  internal void Init(Controller ct) {
+    c = ct;
+    cells = c.grids.next;
     //-> create block ids
     ids = new int[] {
       Blocks.i, Blocks.o, Blocks.s, Blocks.z,
@@ -72,11 +72,11 @@ public class Next {
     int rx, ry;
     for (int j = 0; j < 3; j++) {
       s = queue1[j];
-      cells[s.x, s.y].color = grids.empty;
+      cells[s.x, s.y].color = c.colors.empty;
       r = Blocks.Relatives(s);
       for (int i = 0; i < r.Length; i++) {
         rx = s.x + r[i].x; ry = s.y + r[i].y;
-        cells[rx, ry].color = grids.empty;
+        cells[rx, ry].color = c.colors.empty;
       }
     }
   }
@@ -89,12 +89,12 @@ public class Next {
       else s.x = 1;
       if (s.id == Blocks.i) ny++;
       s.y = ny;
-      cells[s.x, s.y].color = grids.Color(s.id);
+      cells[s.x, s.y].color = c.colors.Get(s.id);
       Blocks.ResetRotate(s);
       r = Blocks.Relatives(s);
       for (int j = 0; j < r.Length; j++) {
         rx = s.x + r[j].x; ry = s.y + r[j].y;
-        cells[rx, ry].color = grids.Color(s.id);
+        cells[rx, ry].color = c.colors.Get(s.id);
       }
       ny = ny - 4;
     }
