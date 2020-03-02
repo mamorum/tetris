@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Blocks : MonoBehaviour {
-  //-> relative points (block rotation)
+  //-> relative points (for rotation)
   static readonly XY[][] emptyR = null, wallR = null;
   static readonly XY[][] iR = new XY[][] {
     new XY[] { new XY(-1, 0), new XY(1, 0), new XY(2, 0) },
