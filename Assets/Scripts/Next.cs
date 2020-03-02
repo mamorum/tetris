@@ -7,14 +7,14 @@ public class Next {
   Status[] queue1, queue2;
   int[] ids; int count = 0, swap;
   bool show = false;
-  Blocks blocks;
+  Grids grids;
   internal void Init(Controller c) {
-    blocks = c.blocks;
-    cells = c.grids.nCells;
+    grids = c.grids;
+    cells = grids.next;
     //-> create block ids
     ids = new int[] {
-      blocks.i, blocks.o, blocks.s, blocks.z,
-      blocks.j, blocks.l, blocks.t
+      Blocks.i, Blocks.o, Blocks.s, Blocks.z,
+      Blocks.j, Blocks.l, Blocks.t
     };
     //-> prepare queues
     CreateQueue();
@@ -72,11 +72,11 @@ public class Next {
     int rx, ry;
     for (int j = 0; j < 3; j++) {
       s = queue1[j];
-      cells[s.x, s.y].color = blocks.Empty();
-      r = blocks.Relatives(s);
+      cells[s.x, s.y].color = grids.empty;
+      r = Blocks.Relatives(s);
       for (int i = 0; i < r.Length; i++) {
         rx = s.x + r[i].x; ry = s.y + r[i].y;
-        cells[rx, ry].color = blocks.Empty();
+        cells[rx, ry].color = grids.empty;
       }
     }
   }
@@ -85,16 +85,16 @@ public class Next {
     int rx, ry, ny = 8;
     for (int i = 0; i < 3; i++) {
       s = queue1[i];
-      if (s.id == blocks.o) s.x = 0;
+      if (s.id == Blocks.o) s.x = 0;
       else s.x = 1;
-      if (s.id == blocks.i) ny++;
+      if (s.id == Blocks.i) ny++;
       s.y = ny;
-      cells[s.x, s.y].color = blocks.colors[s.id];
-      blocks.ResetRotate(s);
-      r = blocks.Relatives(s);
+      cells[s.x, s.y].color = grids.Color(s.id);
+      Blocks.ResetRotate(s);
+      r = Blocks.Relatives(s);
       for (int j = 0; j < r.Length; j++) {
         rx = s.x + r[j].x; ry = s.y + r[j].y;
-        cells[rx, ry].color = blocks.colors[s.id];
+        cells[rx, ry].color = grids.Color(s.id);
       }
       ny = ny - 4;
     }

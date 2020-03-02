@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Board {
-  int[,] grid; SpriteRenderer[,] cells;
-  Status s = new Status();
   bool moved = false;
-  Controller ctrl; Blocks blocks;
+  int[,] board; SpriteRenderer[,] cells;
+  Status s = new Status();
+  Controller ctrl; Grids grids;
   Hold hold; Next next;
   internal void Init(Controller c) {
-    grid = c.grids.main;
-    cells = c.grids.mCells;
-    ctrl = c; blocks = c.blocks;
-    hold = c.hold; next = c.next;    
+    ctrl = c; grids = ctrl.grids;
+    board = grids.board; cells = grids.main;
+    hold = ctrl.hold; next = ctrl.next;    
     hold.Init(c); next.Init(c);
     s.id = next.Id();
     PutBlock();
@@ -20,34 +19,34 @@ public class Board {
   }
   void PutBlock() {
     s.XY(5, 20);
-    blocks.ResetRotate(s);
+    Blocks.ResetRotate(s);
   }
   void FixBlock() {
-    grid[s.x, s.y] = s.id;
-    XY[] r = blocks.Relatives(s);
+    board[s.x, s.y] = s.id;
+    XY[] r = Blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      grid[s.x + cx, s.y + cy] = s.id;
+      board[s.x + cx, s.y + cy] = s.id;
     }
   }
   void HideBlock() {
-    grid[s.x, s.y] = blocks.empty;
-    XY[] r = blocks.Relatives(s);
+    board[s.x, s.y] = Blocks.empty;
+    XY[] r = Blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      grid[s.x + cx, s.y + cy] = blocks.empty;
+      board[s.x + cx, s.y + cy] = Blocks.empty;
     }
   }
   bool IsEmpty(int x, int y, XY[] r) {
-    int b = grid[x, y];
-    if (b != blocks.empty) return false;
+    int b = board[x, y];
+    if (b != Blocks.empty) return false;
     int rX, rY;
     for (int i = 0; i < r.Length; i++) {
       rX = r[i].x; rY = r[i].y;
-      b = grid[x + rX, y + rY];
-      if (b != blocks.empty) {
+      b = board[x + rX, y + rY];
+      if (b != Blocks.empty) {
         return false;
       }
     }
@@ -58,7 +57,7 @@ public class Board {
     int nx = s.x + x;
     int ny = s.y + y;
     moved = false;
-    XY[] r = blocks.Relatives(s);
+    XY[] r = Blocks.Relatives(s);
     if (IsEmpty(nx, ny, r)) {
       s.x = nx;
       s.y = ny;
@@ -68,11 +67,11 @@ public class Board {
   }
 
   internal void RotateBlock() {
-    if (s.id == blocks.o) return; // none
+    if (s.id == Blocks.o) return; // none
     HideBlock();
     int cr = s.rotate;
-    blocks.Rotate(s);
-    XY[] r = blocks.Relatives(s);
+    Blocks.Rotate(s);
+    XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) s.rotate = cr;
     FixBlock();
   }
@@ -92,7 +91,7 @@ public class Board {
     for (int y = 1; y < 21; y++) {
       bool flag = true;
       for (int x = 1; x < 11; x++) {
-        if (grid[x, y] == blocks.empty) {
+        if (board[x, y] == Blocks.empty) {
           flag = false;
           break;
         }
@@ -100,7 +99,7 @@ public class Board {
       if (flag) {
         for (int j = y; j < 21; j++) {
           for (int i = 1; i < 11; i++) {
-            grid[i, j] = grid[i, j + 1];
+            board[i, j] = board[i, j + 1];
           }
         }
         y--;
@@ -108,7 +107,7 @@ public class Board {
     }
   }
   void CheckEnd() {
-    XY[] r = blocks.Relatives(s);
+    XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) ctrl.end = true;
   }
   internal void Drop() {
@@ -126,8 +125,8 @@ public class Board {
   internal void Render() {
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
-        int i = grid[x, y];
-        cells[x, y].color = blocks.colors[i];
+        int i = board[x, y];
+        cells[x, y].color = grids.Color(i);
       }
     }
   }

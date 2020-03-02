@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public Blocks blocks; public Grids grids;
+  public Grids grids;
   Board board = new Board();
   internal Next next = new Next();
   internal Hold hold = new Hold();
   void Start() {
-    grids.Init(this);
+    grids.Init();
     board.Init(this);
     board.Render();
   }
@@ -25,7 +25,7 @@ public class Controller : MonoBehaviour {
     }
     board.Render();
   }
-  //-> process input
+  //-> user input
   readonly int
     left = 1, right = 2, rotate = 3, hld = 4, down = 5;
   int preInput = 0;
