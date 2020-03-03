@@ -8,11 +8,11 @@ public class Controller : MonoBehaviour {
   public Grids grids;
   internal Next next = new Next();
   internal Hold hold = new Hold();
-  Main board = new Main();
+  Main main = new Main();
   void Start() {
     colors.Init(this); grids.Init(this);
     next.Init(this); hold.Init(this);
-    board.Init(this); board.Render();
+    main.Init(this); main.Render();
   }
   internal bool end = false;
   internal int frame = 0;
@@ -22,10 +22,10 @@ public class Controller : MonoBehaviour {
     frame++;
     ProcessInput();
     if (frame >= drop) {
-      board.Drop();
+      main.Drop();
       frame = 0;
     }
-    board.Render();
+    main.Render();
   }
   //-> user input
   readonly int
@@ -35,19 +35,19 @@ public class Controller : MonoBehaviour {
   internal void ProcessInput() {
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
       if (preInput == left) return;
-      board.MoveBlock(-1, 0);
+      main.MoveBlock(-1, 0);
       preInput = left;
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput == right) return;
-      board.MoveBlock(1, 0);
+      main.MoveBlock(1, 0);
       preInput = right;
     } else if (Input.GetButton("Fire3")) { // Space or 〇
       if (preInput == rotate) return;
-      board.RotateBlock();
+      main.RotateBlock();
       preInput = rotate;
     } else if (Input.GetButton("Jump")) { // H or △
       if (preInput == hld) return;
-      board.Hold();
+      main.Hold();
       preInput = hld;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       if (dropped && preInput == down) return;
