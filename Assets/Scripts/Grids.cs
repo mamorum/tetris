@@ -52,7 +52,7 @@ public class Grids : MonoBehaviour {
   }
   SpriteRenderer Create(float x, float y, Color c) {
     GameObject g = Instantiate(prfbCell);
-    cells.Add(g); // to destroy later.
+    cells.Add(g); // to destroy object later.
     SpriteRenderer s =
       g.GetComponent<SpriteRenderer>();
     Vector2 pos = s.transform.position;
