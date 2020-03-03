@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board {
+public class Main {
   bool moved = false;
   int[,] board; SpriteRenderer[,] cells;
   Status s = new Status();

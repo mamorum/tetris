@@ -8,7 +8,7 @@ public class Controller : MonoBehaviour {
   public Grids grids;
   internal Next next = new Next();
   internal Hold hold = new Hold();
-  Board board = new Board();
+  Main board = new Main();
   void Start() {
     colors.Init(this); grids.Init(this);
     next.Init(this); hold.Init(this);
