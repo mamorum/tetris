@@ -8,18 +8,18 @@ public class Fps : MonoBehaviour {
     Application.targetFrameRate = rate;
     gameObject.SetActive(true);
   }
-  int frameCount = 0;
-  float elaspedSec = 0, fps = 0;
+  int frame = 0;
+  float sec = 0, fps = 0;
   void Update() {
-    frameCount++;
-    elaspedSec += Time.deltaTime;
-    if (elaspedSec >= 1f) {
-      fps = frameCount / elaspedSec;
+    frame++;
+    sec += Time.deltaTime;
+    if (sec >= 1f) {
+      fps = frame / sec;
       txt.text = string.Format(
         "{0:00}", fps
       ) + " fps";
-      frameCount = 0;
-      elaspedSec = 0;
+      frame = 0;
+      sec = 0;
     }
   }
 }
