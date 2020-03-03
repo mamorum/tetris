@@ -31,7 +31,7 @@ public class Grids : MonoBehaviour {
           CreateWall(cX, cY);
           board[x, y] = Blocks.wall;
         } else if (y == 21) {
-          CreateWall(cX, cY);
+          //CreateWall(cX, cY);
           board[x, y] = Blocks.empty;
         } else {
           board[x, y] = Blocks.empty;
@@ -44,7 +44,7 @@ public class Grids : MonoBehaviour {
       cY = baseY + (y * 0.355f);
       for (int x = 0; x < 4; x++) {
         cX = baseX + (x * 0.355f);
-        next[x, y] = Empty(cX, cY);
+        next[x, y] = Back(cX, cY);
       }
     }
     //-> hold
@@ -53,7 +53,7 @@ public class Grids : MonoBehaviour {
       cY = baseY + (y * 0.355f);
       for (int x = 0; x < 4; x++) {
         cX = baseX + (x * 0.355f);
-        hold[x, y] = Empty(cX, cY);
+        hold[x, y] = Back(cX, cY);
       }
     }
   }
@@ -70,6 +70,9 @@ public class Grids : MonoBehaviour {
   }
   SpriteRenderer Empty(float x, float y) {
     return Create(x, y, colors.empty);
+  }
+  SpriteRenderer Back(float x, float y) {
+    return Create(x, y, colors.back);
   }
   void CreateWall(float x, float y) {
     Create(x, y, colors.wall);

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public Colors colors; public Grids grids;
+  public Camera cam;
+  public Colors colors;
+  public Grids grids;
   internal Next next = new Next();
   internal Hold hold = new Hold();
   Board board = new Board();
   void Start() {
-    colors.Init(); grids.Init(this);
+    colors.Init(this); grids.Init(this);
     next.Init(this); hold.Init(this);
     board.Init(this); board.Render();
   }

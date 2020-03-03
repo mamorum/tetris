@@ -6,7 +6,9 @@ public class Colors : MonoBehaviour {
   public Color empty, wall, i, o, s, z, j, l, t;
   Dictionary<int, Color> colors = new Dictionary<int, Color>();
   internal Color Get(int id) { return colors[id]; }
-  internal void Init() {
+  internal Color back;
+  internal void Init(Controller c) {
+    back = c.cam.backgroundColor;
     colors.Add(Blocks.empty, empty);
     colors.Add(Blocks.wall, wall); colors.Add(Blocks.i, i);
     colors.Add(Blocks.o, o); colors.Add(Blocks.s, s);

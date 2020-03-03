@@ -23,12 +23,12 @@ public class Hold {
     return held;
   }
   void Hide() {
-    cells[s.x, s.y].color = c.colors.empty;
+    cells[s.x, s.y].color = c.colors.back;
     XY[] r = Blocks.Relatives(s);
     int rx, ry;
     for (int i = 0; i < r.Length; i++) {
       rx = s.x + r[i].x; ry = s.y + r[i].y;
-      cells[rx, ry].color = c.colors.empty;
+      cells[rx, ry].color = c.colors.back;
     }
   }
   internal void Show() {

@@ -72,11 +72,11 @@ public class Next {
     int rx, ry;
     for (int j = 0; j < 3; j++) {
       s = queue1[j];
-      cells[s.x, s.y].color = c.colors.empty;
+      cells[s.x, s.y].color = c.colors.back;
       r = Blocks.Relatives(s);
       for (int i = 0; i < r.Length; i++) {
         rx = s.x + r[i].x; ry = s.y + r[i].y;
-        cells[rx, ry].color = c.colors.empty;
+        cells[rx, ry].color = c.colors.back;
       }
     }
   }
