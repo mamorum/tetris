@@ -17,6 +17,7 @@ public class Board {
   }
   void PutBlock() {
     s.XY(5, 20);
+    if (s.id == Blocks.i) s.y++;
     Blocks.ResetRotate(s);
   }
   void FixBlock() {
