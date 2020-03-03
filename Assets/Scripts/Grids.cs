@@ -4,37 +4,30 @@ using UnityEngine;
 
 public class Grids : MonoBehaviour {
   public GameObject prfbCell;
-  internal int[,] board = new int[12, 23];
+  internal int[,] board = new int[12, 24];
   internal SpriteRenderer[,]
     main = new SpriteRenderer[12, 22],
     next = new SpriteRenderer[4, 10],
     hold = new SpriteRenderer[4, 2];
   List<GameObject> cells = new List<GameObject>();
-  Colors colors;
-  internal void Init(Controller c) {
-    colors = c.colors;
+  Controller c;
+  internal void Init(Controller ctrl) {
+    c = ctrl;
     //-> main
     float cX, cY;
     float baseX = -1.955f, baseY = -3.790f;
-    for (int y = 0; y < 23; y++) {
-      if (y == 22) { //-> top (not displayed.)
-        for (int x = 0; x < 12; x++) {
-          board[x, y] = Blocks.empty;
-        }
-        break;
-      }
+    for (int y = 0; y < 24; y++) {
       cY = baseY + (y * 0.355f);
       for (int x = 0; x < 12; x++) {
         cX = baseX + (x * 0.355f);
-        main[x, y] = Empty(cX, cY);
-        if (x == 11 || x == 0 || y == 0) {
-          CreateWall(cX, cY);
-          board[x, y] = Blocks.wall;
-        } else if (y == 21) {
-          //CreateWall(cX, cY);
+        if (y >= 22) { // not to display
           board[x, y] = Blocks.empty;
+        } else if (y==0 || x==0 || x==11) {
+          board[x, y] = Blocks.wall;
+          main[x, y] = Wall(cX, cY);
         } else {
           board[x, y] = Blocks.empty;
+          main[x, y] = Empty(cX, cY);
         }
       }
     }
@@ -68,13 +61,13 @@ public class Grids : MonoBehaviour {
     s.color = c;
     return s;
   }
-  SpriteRenderer Empty(float x, float y) {
-    return Create(x, y, colors.empty);
-  }
   SpriteRenderer Back(float x, float y) {
-    return Create(x, y, colors.back);
+    return Create(x, y, c.colors.back);
   }
-  void CreateWall(float x, float y) {
-    Create(x, y, colors.wall);
+  SpriteRenderer Empty(float x, float y) {
+    return Create(x, y, c.colors.empty);
+  }
+  SpriteRenderer Wall(float x, float y) {
+    return Create(x, y, c.colors.wall);
   }
 }

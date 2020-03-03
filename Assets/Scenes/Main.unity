@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   empty: {r: 0.1254902, g: 0.1254902, b: 0.1254902, a: 1}
-  wall: {r: 0.9019608, g: 0.9019608, b: 0.9019608, a: 0.69803923}
+  wall: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 1}
   i: {r: 0.011764706, g: 0.6627451, b: 0.95686275, a: 1}
   o: {r: 1, g: 0.84705883, b: 0.23137255, a: 1}
   s: {r: 0.29803923, g: 0.6862745, b: 0.3137255, a: 1}
@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
+  m_Color: {r: 0.6901961, g: 0.6901961, b: 0.6901961, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -510,7 +510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
+  m_Color: {r: 0.6901961, g: 0.6901961, b: 0.6901961, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
