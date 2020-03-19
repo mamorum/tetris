@@ -14,12 +14,18 @@ public class Controller : MonoBehaviour {
     next.Init(this); hold.Init(this);
     main.Init(this); main.Render();
   }
-  internal bool end = false;
+  internal bool
+    end = false, del = false;
   internal int frame = 0;
   int drop = 60;
   void Update() {
     if (end) return;
     frame++;
+    if (del) {
+      if (frame == 60) main.Delete();
+      else main.Deleting();
+      return;
+    }
     ProcessInput();
     if (frame >= drop) {
       main.Drop();

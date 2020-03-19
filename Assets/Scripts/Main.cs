@@ -86,22 +86,44 @@ public class Main {
     PutBlock();
     FixBlock();
   }
-  void DeleteLine() {
+  List<int> delete = new List<int>();
+  bool HasDelete() {
     for (int y = 1; y < 21; y++) {
-      bool flag = true;
       for (int x = 1; x < 11; x++) {
-        if (board[x, y] == Blocks.empty) {
-          flag = false;
-          break;
+        if (board[x, y] == Blocks.empty) break;
+        if (x == 10) delete.Add(y);
+      }
+    }
+    if (delete.Count != 0) {
+      c.del = true;
+      return true;
+    } else {
+      return false;
+    }
+  }
+  internal void Delete() {
+    for (int i = 0; i < delete.Count; i++) {
+      for (int y = delete[i] - i; y < 21; y++) {
+        for (int x = 1; x < 11; x++) {
+          board[x, y] = board[x, y + 1];
         }
       }
-      if (flag) {
-        for (int j = y; j < 21; j++) {
-          for (int i = 1; i < 11; i++) {
-            board[i, j] = board[i, j + 1];
-          }
-        }
-        y--;
+    }
+    // TODO
+    //  - 色（透過）を元に戻す
+    c.del = false;
+    c.frame = 0;
+    delete.Clear();
+    PutBlock();
+    CheckEnd();
+    FixBlock();
+  }
+  internal void Deleting() {
+    Color c;
+    foreach (int y in delete) {
+      for (int x = 1; x < 11; x++) {
+        c = cells[x, y].color;
+        cells[x, y].color = new Color(c.r, c.g, c.b, c.a - 0.05f);
       }
     }
   }
@@ -116,7 +138,7 @@ public class Main {
     c.dropped = true;
     c.hold.used = false;
     s.id = c.next.Id();
-    DeleteLine();
+    if (HasDelete()) return;
     PutBlock();
     CheckEnd();
     FixBlock();
