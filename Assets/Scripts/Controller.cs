@@ -17,19 +17,25 @@ public class Controller : MonoBehaviour {
   internal bool
     end = false, del = false;
   internal int frame = 0;
-  int drop = 60;
+  int drop = 60, delete = 30;
   void Update() {
     if (end) return;
     frame++;
-    if (del) {
-      if (frame == 30) main.Delete();
-      else main.Deleting();
-      return;
+    if (del) Delete();
+    else Process();
+  }
+  void Delete() {
+    if (frame == delete) {
+      main.Delete();
+      main.Render();
+    } else {
+      main.Deleting();
     }
-    ProcessInput();
+  }
+  void Process() {
+    HandleInput();
     if (frame >= drop) {
       main.Drop();
-      frame = 0;
     }
     main.Render();
   }
@@ -38,7 +44,7 @@ public class Controller : MonoBehaviour {
     left = 1, right = 2, rotate = 3, hld = 4, down = 5;
   int preInput = 0;
   internal bool dropped = false;
-  internal void ProcessInput() {
+  internal void HandleInput() {
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
       if (preInput == left) return;
       main.MoveBlock(-1, 0);

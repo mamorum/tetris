@@ -112,9 +112,7 @@ public class Main {
     c.del = false;
     c.frame = 0;
     delete.Clear();
-    PutBlock();
-    CheckEnd();
-    FixBlock();
+    NextBlock();
   }
   internal void Deleting() {
     Color c;
@@ -126,21 +124,25 @@ public class Main {
       }
     }
   }
+  void NextBlock() {
+    s.id = c.next.Id();
+    PutBlock();
+    CheckEnd();
+    FixBlock();
+  }
   void CheckEnd() {
     XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) c.end = true;
   }
   internal void Drop() {
+    c.frame = 0;
     MoveBlock(0, -1);
     if (moved) return;
     //-> dropped
     c.dropped = true;
     c.hold.used = false;
-    s.id = c.next.Id();
     if (HasDelete()) return;
-    PutBlock();
-    CheckEnd();
-    FixBlock();
+    NextBlock();
   }
   internal void Render() {
     for (int y = 1; y < 22; y++) {
