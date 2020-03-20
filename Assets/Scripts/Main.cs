@@ -109,8 +109,6 @@ public class Main {
         }
       }
     }
-    // TODO
-    //  - 色（透過）を元に戻す
     c.del = false;
     c.frame = 0;
     delete.Clear();
