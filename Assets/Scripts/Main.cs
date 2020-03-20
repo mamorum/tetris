@@ -102,7 +102,8 @@ public class Main {
     }
   }
   internal void Delete() {
-    for (int i = 0; i < delete.Count; i++) {
+    int line = delete.Count;
+    for (int i = 0; i < line; i++) {
       for (int y = delete[i] - i; y < 21; y++) {
         for (int x = 1; x < 11; x++) {
           board[x, y] = board[x, y + 1];
@@ -111,6 +112,7 @@ public class Main {
     }
     c.del = false;
     c.frame = 0;
+    c.score.Add(line);
     delete.Clear();
     NextBlock();
   }

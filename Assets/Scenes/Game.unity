@@ -754,6 +754,7 @@ MonoBehaviour:
   cam: {fileID: 519420031}
   colors: {fileID: 172720311}
   grids: {fileID: 1598488834}
+  score: {fileID: 1389770320}
 --- !u!1 &996789544
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,6 +1075,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1389770319}
+  - component: {fileID: 1389770320}
   m_Layer: 5
   m_Name: Score
   m_TagString: Untagged
@@ -1106,6 +1108,20 @@ RectTransform:
   m_AnchoredPosition: {x: 400, y: -354}
   m_SizeDelta: {x: 260, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1389770320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1389770318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e16c68c6bd2cf4ca37c1209f6c98e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  txtLine: {fileID: 763973453}
+  txtScore: {fileID: 727134495}
 --- !u!1 &1598488832
 GameObject:
   m_ObjectHideFlags: 0

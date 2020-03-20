@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public Camera cam;
-  public Colors colors;
-  public Grids grids;
+  public Camera cam; public Colors colors;
+  public Grids grids; public Score score;
   internal Next next = new Next();
   internal Hold hold = new Hold();
   Main main = new Main();
