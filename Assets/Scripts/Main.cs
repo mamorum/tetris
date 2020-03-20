@@ -123,7 +123,8 @@ public class Main {
     foreach (int y in delete) {
       for (int x = 1; x < 11; x++) {
         c = cells[x, y].color;
-        cells[x, y].color = new Color(c.r, c.g, c.b, c.a - 0.05f);
+        c.a = c.a - 0.03f;
+        cells[x, y].color = c;
       }
     }
   }

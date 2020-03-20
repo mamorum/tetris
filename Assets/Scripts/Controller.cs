@@ -22,7 +22,7 @@ public class Controller : MonoBehaviour {
     if (end) return;
     frame++;
     if (del) {
-      if (frame == 60) main.Delete();
+      if (frame == 30) main.Delete();
       else main.Deleting();
       return;
     }
