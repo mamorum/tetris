@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Score : MonoBehaviour {
   public Text txtLine, txtScore;
-  int line, score;
+  int line = 0, score = 0;
   internal void Add(int lines) {
     line += lines;
     if (lines == 1) score += 40;
