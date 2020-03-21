@@ -10,7 +10,7 @@ public class Next {
   Controller c;
   internal void Init(Controller ct) {
     c = ct;
-    cells = c.grids.next;
+    cells = c.cells.next;
     //-> create block ids
     ids = new int[] {
       Blocks.i, Blocks.o, Blocks.s, Blocks.z,

@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Main {
+public class Board {
   bool moved = false;
-  int[,] board; SpriteRenderer[,] cells;
+  int[,] grid; SpriteRenderer[,] cells;
   Status s = new Status();
+  Next next = new Next();
+  Hold hold = new Hold();
   Controller c;
   internal void Init(Controller ct) {
-    c = ct;
-    board = c.grids.board;
-    cells = c.grids.main;
-    s.id = c.next.Id();
+    c = ct; next.Init(c); hold.Init(c);
+    grid = c.cells.grid;
+    cells = c.cells.main;
+    s.id = next.Id();
     PutBlock();
     FixBlock();
   }
@@ -21,30 +23,30 @@ public class Main {
     Blocks.ResetRotate(s);
   }
   void FixBlock() {
-    board[s.x, s.y] = s.id;
+    grid[s.x, s.y] = s.id;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      board[s.x + cx, s.y + cy] = s.id;
+      grid[s.x + cx, s.y + cy] = s.id;
     }
   }
   void HideBlock() {
-    board[s.x, s.y] = Blocks.empty;
+    grid[s.x, s.y] = Blocks.empty;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      board[s.x + cx, s.y + cy] = Blocks.empty;
+      grid[s.x + cx, s.y + cy] = Blocks.empty;
     }
   }
   bool IsEmpty(int x, int y, XY[] r) {
-    int b = board[x, y];
+    int b = grid[x, y];
     if (b != Blocks.empty) return false;
     int rX, rY;
     for (int i = 0; i < r.Length; i++) {
       rX = r[i].x; rY = r[i].y;
-      b = board[x + rX, y + rY];
+      b = grid[x + rX, y + rY];
       if (b != Blocks.empty) {
         return false;
       }
@@ -75,14 +77,14 @@ public class Main {
     FixBlock();
   }
   internal void Hold() {
-    if (c.hold.used) return;
+    if (hold.used) return;
     HideBlock();
-    s.id = c.hold.Replace(s.id);
-    if (c.hold.IsEmpty(s.id)) {
-      s.id = c.next.Id(); // first time
+    s.id = hold.Replace(s.id);
+    if (hold.IsEmpty(s.id)) {
+      s.id = next.Id(); // first time
     }
     c.frame = 0;
-    c.hold.used = true;
+    hold.used = true;
     PutBlock();
     FixBlock();
   }
@@ -90,7 +92,7 @@ public class Main {
   bool HasDelete() {
     for (int y = 1; y < 21; y++) {
       for (int x = 1; x < 11; x++) {
-        if (board[x, y] == Blocks.empty) break;
+        if (grid[x, y] == Blocks.empty) break;
         if (x == 10) delete.Add(y);
       }
     }
@@ -106,7 +108,7 @@ public class Main {
     for (int i = 0; i < line; i++) {
       for (int y = delete[i] - i; y < 21; y++) {
         for (int x = 1; x < 11; x++) {
-          board[x, y] = board[x, y + 1];
+          grid[x, y] = grid[x, y + 1];
         }
       }
     }
@@ -127,7 +129,7 @@ public class Main {
     }
   }
   void NextBlock() {
-    s.id = c.next.Id();
+    s.id = next.Id();
     PutBlock();
     CheckEnd();
     FixBlock();
@@ -142,14 +144,14 @@ public class Main {
     if (moved) return;
     //-> dropped
     c.dropped = true;
-    c.hold.used = false;
+    hold.used = false;
     if (HasDelete()) return;
     NextBlock();
   }
   internal void Render() {
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
-        int i = board[x, y];
+        int i = grid[x, y];
         cells[x, y].color = c.colors.Get(i);
       }
     }

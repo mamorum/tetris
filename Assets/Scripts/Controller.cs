@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour {
   public Camera cam; public Colors colors;
-  public Grids grids; public Score score;
-  internal Next next = new Next();
-  internal Hold hold = new Hold();
-  Main main = new Main();
+  public Cells cells; public Score score;
+  Board board = new Board();
   void Start() {
-    colors.Init(this); grids.Init(this);
-    next.Init(this); hold.Init(this);
-    main.Init(this); main.Render();
+    colors.Init(this); cells.Init(this);
+    board.Init(this); board.Render();
   }
   internal bool
     end = false, del = false;
@@ -25,18 +22,18 @@ public class Controller : MonoBehaviour {
   }
   void Delete() {
     if (frame == delete) {
-      main.Delete();
-      main.Render();
+      board.Delete();
+      board.Render();
     } else {
-      main.Deleting();
+      board.Deleting();
     }
   }
   void Process() {
     HandleInput();
     if (frame >= drop) {
-      main.Drop();
+      board.Drop();
     }
-    main.Render();
+    board.Render();
   }
   //-> user input
   readonly int
@@ -46,19 +43,19 @@ public class Controller : MonoBehaviour {
   internal void HandleInput() {
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
       if (preInput == left) return;
-      main.MoveBlock(-1, 0);
+      board.MoveBlock(-1, 0);
       preInput = left;
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
       if (preInput == right) return;
-      main.MoveBlock(1, 0);
+      board.MoveBlock(1, 0);
       preInput = right;
     } else if (Input.GetButton("Fire3")) { // Space or 〇
       if (preInput == rotate) return;
-      main.RotateBlock();
+      board.RotateBlock();
       preInput = rotate;
     } else if (Input.GetButton("Jump")) { // H or △
       if (preInput == hld) return;
-      main.Hold();
+      board.Hold();
       preInput = hld;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       if (dropped && preInput == down) return;

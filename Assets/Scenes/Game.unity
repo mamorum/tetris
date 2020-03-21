@@ -753,7 +753,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 519420031}
   colors: {fileID: 172720311}
-  grids: {fileID: 1598488834}
+  cells: {fileID: 1598488834}
   score: {fileID: 1389770320}
 --- !u!1 &996789544
 GameObject:
@@ -1133,7 +1133,7 @@ GameObject:
   - component: {fileID: 1598488833}
   - component: {fileID: 1598488834}
   m_Layer: 5
-  m_Name: Grids
+  m_Name: Cells
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

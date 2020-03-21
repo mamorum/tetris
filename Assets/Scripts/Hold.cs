@@ -9,7 +9,7 @@ public class Hold {
   Controller c;
   internal void Init(Controller ct) {
     c = ct;
-    cells = c.grids.hold;
+    cells = c.cells.hold;
     s.id = Blocks.empty;
   }
   internal bool IsEmpty(int blockId) {
