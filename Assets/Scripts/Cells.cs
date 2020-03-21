@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Cells : MonoBehaviour {
   public GameObject prfbCell;
-  internal SpriteRenderer[,]
-    hold = new SpriteRenderer[4, 2],
-    next = new SpriteRenderer[4, 10],
-    main = new SpriteRenderer[12, 22];
-  internal int[,] grid = new int[12, 24]; //-> for main
+  internal Cell[,]
+    hold = new Cell[4, 2],
+    next = new Cell[4, 10],
+    main = new Cell[12, 24];
   List<GameObject> cells = new List<GameObject>();
   Controller c;
   internal void Init(Controller ctrl) {
@@ -35,19 +34,17 @@ public class Cells : MonoBehaviour {
     lenX++; // add a cell space from hold.
     baseX = baseX + (lenX * distance);
     baseY = bottom;
-    lenX = grid.GetLength(0);
-    lenY = grid.GetLength(1);
+    lenX = main.GetLength(0);
+    lenY = main.GetLength(1);
     for (int y = 0; y < lenY; y++) {
       posY = baseY + (y * distance);
       for (int x = 0; x < lenX; x++) {
         posX = baseX + (x * distance);
         if (y >= 22) { // not visible.
-          grid[x, y] = Blocks.empty;
+          main[x, y] = new Cell(Blocks.empty, null, null);
         } else if (y==0 || x==0 || x==11) {
-          grid[x, y] = Blocks.wall;
           main[x, y] = Wall(posX, posY);
         } else {
-          grid[x, y] = Blocks.empty;
           main[x, y] = Empty(posX, posY);
         }
       }
@@ -66,24 +63,24 @@ public class Cells : MonoBehaviour {
       }
     }
   }
-  SpriteRenderer Create(float x, float y, Color c) {
+  Cell Create(int id, float x, float y, Color clr) {
     GameObject g = Instantiate(prfbCell);
     cells.Add(g); // to destroy object later.
     SpriteRenderer s =
       g.GetComponent<SpriteRenderer>();
+    s.color = clr;
     Vector2 pos = s.transform.position;
     pos.x = x; pos.y = y;
     s.transform.position = pos;
-    s.color = c;
-    return s;
+    return new Cell(id, s, c.colors);
   }
-  SpriteRenderer Back(float x, float y) {
-    return Create(x, y, c.colors.back);
+  Cell Back(float x, float y) {
+    return Create(Blocks.empty, x, y, c.colors.back);
   }
-  SpriteRenderer Empty(float x, float y) {
-    return Create(x, y, c.colors.empty);
+  Cell Empty(float x, float y) {
+    return Create(Blocks.empty, x, y, c.colors.empty);
   }
-  SpriteRenderer Wall(float x, float y) {
-    return Create(x, y, c.colors.wall);
+  Cell Wall(float x, float y) {
+    return Create(Blocks.wall, x, y, c.colors.wall);
   }
 }

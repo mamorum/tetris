@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Board {
   bool moved = false;
-  int[,] grid; SpriteRenderer[,] cells;
+  Cell[,] cells;
   Status s = new Status();
   Next next = new Next();
   Hold hold = new Hold();
   Controller c;
   internal void Init(Controller ct) {
     c = ct; next.Init(c); hold.Init(c);
-    grid = c.cells.grid;
+    //grid = c.cells.grid;
     cells = c.cells.main;
     s.id = next.Id();
     PutBlock();
@@ -23,30 +23,30 @@ public class Board {
     Blocks.ResetRotate(s);
   }
   void FixBlock() {
-    grid[s.x, s.y] = s.id;
+    cells[s.x, s.y].id = s.id;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      grid[s.x + cx, s.y + cy] = s.id;
+      cells[s.x + cx, s.y + cy].id = s.id;
     }
   }
   void HideBlock() {
-    grid[s.x, s.y] = Blocks.empty;
+    cells[s.x, s.y].id = Blocks.empty;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
     for (int i = 0; i < r.Length; i++) {
       cx = r[i].x; cy = r[i].y;
-      grid[s.x + cx, s.y + cy] = Blocks.empty;
+      cells[s.x + cx, s.y + cy].id = Blocks.empty;
     }
   }
   bool IsEmpty(int x, int y, XY[] r) {
-    int b = grid[x, y];
+    int b = cells[x, y].id;
     if (b != Blocks.empty) return false;
     int rX, rY;
     for (int i = 0; i < r.Length; i++) {
       rX = r[i].x; rY = r[i].y;
-      b = grid[x + rX, y + rY];
+      b = cells[x + rX, y + rY].id;
       if (b != Blocks.empty) {
         return false;
       }
@@ -90,9 +90,9 @@ public class Board {
   }
   List<int> delete = new List<int>();
   bool HasDelete() {
-    for (int y = 1; y < 21; y++) {
+    for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
-        if (grid[x, y] == Blocks.empty) break;
+        if (cells[x, y].id == Blocks.empty) break;
         if (x == 10) delete.Add(y);
       }
     }
@@ -106,9 +106,9 @@ public class Board {
   internal void Delete() {
     int line = delete.Count;
     for (int i = 0; i < line; i++) {
-      for (int y = delete[i] - i; y < 21; y++) {
+      for (int y = delete[i] - i; y < 22; y++) {
         for (int x = 1; x < 11; x++) {
-          grid[x, y] = grid[x, y + 1];
+          cells[x, y].id = cells[x, y + 1].id;
         }
       }
     }
@@ -119,12 +119,9 @@ public class Board {
     NextBlock();
   }
   internal void Deleting() {
-    Color c;
     foreach (int y in delete) {
       for (int x = 1; x < 11; x++) {
-        c = cells[x, y].color;
-        c.a = c.a - 0.03f;
-        cells[x, y].color = c;
+        cells[x, y].AddAlpha(-0.03f);
       }
     }
   }
@@ -151,8 +148,7 @@ public class Board {
   internal void Render() {
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
-        int i = grid[x, y];
-        cells[x, y].color = c.colors.Get(i);
+        cells[x, y].ChangeColor();
       }
     }
   }
