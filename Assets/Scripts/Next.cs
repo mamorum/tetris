@@ -72,13 +72,11 @@ public class Next {
     int rx, ry;
     for (int j = 0; j < 3; j++) {
       s = queue1[j];
-      cells[s.x, s.y].id = Blocks.empty;
-      cells[s.x, s.y].ToBackColor();
+      cells[s.x, s.y].ToBackground();
       r = Blocks.Relatives(s);
       for (int i = 0; i < r.Length; i++) {
         rx = s.x + r[i].x; ry = s.y + r[i].y;
-        cells[rx, ry].id = Blocks.empty;
-        cells[rx, ry].ToBackColor();
+        cells[rx, ry].ToBackground();
       }
     }
   }
@@ -91,14 +89,12 @@ public class Next {
       else s.x = 1;
       if (s.id == Blocks.i) ny++;
       s.y = ny;
-      cells[s.x, s.y].id = s.id;
-      cells[s.x, s.y].ChangeColor();
+      cells[s.x, s.y].Color(s);
       Blocks.ResetRotate(s);
       r = Blocks.Relatives(s);
       for (int j = 0; j < r.Length; j++) {
         rx = s.x + r[j].x; ry = s.y + r[j].y;
-        cells[rx, ry].id = s.id;
-        cells[rx, ry].ChangeColor();
+        cells[rx, ry].Color(s);
       }
       ny = ny - 4;
     }

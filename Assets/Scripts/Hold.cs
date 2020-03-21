@@ -23,28 +23,24 @@ public class Hold {
     return held;
   }
   void Hide() {
-    cells[s.x, s.y].id = Blocks.empty;
-    cells[s.x, s.y].ToBackColor();
+    cells[s.x, s.y].ToBackground();
     XY[] r = Blocks.Relatives(s);
     int rx, ry;
     for (int i = 0; i < r.Length; i++) {
       rx = s.x + r[i].x; ry = s.y + r[i].y;
-      cells[rx, ry].id = Blocks.empty;
-      cells[rx, ry].ToBackColor();
+      cells[rx, ry].ToBackground();
     }
   }
   internal void Show() {
     if (s.id == Blocks.i) s.XY(1, 1);
     else s.XY(2, 0);
-    cells[s.x, s.y].id = s.id;
-    cells[s.x, s.y].ChangeColor();
+    cells[s.x, s.y].Color(s);
     Blocks.ResetRotate(s);
     XY[] r = Blocks.Relatives(s);
     int rx, ry;
     for (int j = 0; j < r.Length; j++) {
       rx = s.x + r[j].x; ry = s.y + r[j].y;
-      cells[rx, ry].id = s.id;
-      cells[rx, ry].ChangeColor();
+      cells[rx, ry].Color(s);
     }
   }
 }

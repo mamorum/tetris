@@ -148,7 +148,7 @@ public class Board {
   internal void Render() {
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
-        cells[x, y].ChangeColor();
+        cells[x, y].Render();
       }
     }
   }
