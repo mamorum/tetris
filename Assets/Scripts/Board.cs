@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Board {
-  bool moved = false;
-  Cell[,] cells;
+  Controller c; Cell[,] cells;
   Status s = new Status();
   Next next = new Next();
   Hold hold = new Hold();
-  Controller c;
+  List<int> delete = new List<int>();
   internal void Init(Controller ct) {
-    c = ct;
-    next.Init(c); hold.Init(c);
-    cells = c.cells.main;
+    c = ct; cells = c.cells.main;
+    next.Init(c); hold.Init(c);    
     s.id = next.Id();
-    PutBlock();
-    FixBlock();
+    InsertBlock();
+    ShowBlock();
   }
-  void PutBlock() {
-    s.XY(5, 20);
+  void InsertBlock() {
+    s.XY(5, 20); // first place
     if (s.id == Blocks.i) s.y++;
     Blocks.ResetRotate(s);
+    c.insert = true;
   }
-  void FixBlock() {
+  void ShowBlock() {
     cells[s.x, s.y].id = s.id;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
@@ -53,18 +52,19 @@ public class Board {
     }
     return true;
   }
-  internal void MoveBlock(int x, int y) {
+  internal bool MoveBlock(int x, int y) {
     HideBlock();
     int nx = s.x + x;
     int ny = s.y + y;
-    moved = false;
     XY[] r = Blocks.Relatives(s);
     if (IsEmpty(nx, ny, r)) {
       s.x = nx;
       s.y = ny;
-      moved = true;
+      ShowBlock();
+      return true;
     }
-    FixBlock();
+    ShowBlock();
+    return false;
   }
 
   internal void RotateBlock() {
@@ -74,7 +74,7 @@ public class Board {
     Blocks.Rotate(s);
     XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) s.rotate = cr;
-    FixBlock();
+    ShowBlock();
   }
   internal void Hold() {
     if (hold.used) return;
@@ -85,18 +85,35 @@ public class Board {
     }
     c.frame = 0;
     hold.used = true;
-    PutBlock();
-    FixBlock();
+    InsertBlock();
+    ShowBlock();
   }
   void NextBlock() {
     s.id = next.Id();
-    PutBlock();
+    InsertBlock();
     CheckEnd();
-    FixBlock();
+    ShowBlock();
   }
   void CheckEnd() {
     XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) c.end = true;
+  }
+  internal void Drop() {
+    c.frame = 0;
+    if (MoveBlock(0, -1)) return;
+    //-> dropped. no space to move.
+    hold.used = false;
+    CheckDelete();
+  }
+  void CheckDelete() {
+    for (int y = 1; y < 22; y++) {
+      for (int x = 1; x < 11; x++) {
+        if (cells[x, y].id == Blocks.empty) break;
+        if (x == 10) delete.Add(y);
+      }
+    }
+    if (delete.Count == 0) NextBlock();
+    else c.del = true;
   }
   internal void Delete() {
     int line = delete.Count;
@@ -119,26 +136,6 @@ public class Board {
         cells[x, y].AddAlpha(-0.03f);
       }
     }
-  }
-  List<int> delete = new List<int>();
-  void CheckDelete() {
-    for (int y = 1; y < 22; y++) {
-      for (int x = 1; x < 11; x++) {
-        if (cells[x, y].id == Blocks.empty) break;
-        if (x == 10) delete.Add(y);
-      }
-    }
-    if (delete.Count == 0) NextBlock();
-    else c.del = true;
-  }
-  internal void Drop() {
-    c.frame = 0;
-    MoveBlock(0, -1);
-    if (moved) return;
-    //-> dropped
-    c.dropped = true;
-    hold.used = false;
-    CheckDelete();
   }
   internal void Render() {
     for (int y = 1; y < 22; y++) {

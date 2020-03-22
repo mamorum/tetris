@@ -23,6 +23,7 @@ public class Controller : MonoBehaviour {
   void Delete() {
     if (frame == delete) {
       board.Delete();
+      board.Render();
     } else {
       board.Deleting();
     }
@@ -37,32 +38,32 @@ public class Controller : MonoBehaviour {
   //-> user input
   readonly int
     left = 1, right = 2, rotate = 3, hld = 4, down = 5;
-  int preInput = 0;
-  internal bool dropped = false;
+  int input = 0;
+  internal bool insert = false;
   internal void HandleInput() {
     if (Input.GetAxisRaw("Horizontal") == -1) { // Left
-      if (preInput == left) return;
+      if (input == left) return;
       board.MoveBlock(-1, 0);
-      preInput = left;
+      input = left;
     } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
-      if (preInput == right) return;
+      if (input == right) return;
       board.MoveBlock(1, 0);
-      preInput = right;
+      input = right;
     } else if (Input.GetButton("Fire3")) { // Space or 〇
-      if (preInput == rotate) return;
+      if (input == rotate) return;
       board.RotateBlock();
-      preInput = rotate;
+      input = rotate;
     } else if (Input.GetButton("Jump")) { // H or △
-      if (preInput == hld) return;
+      if (input == hld) return;
       board.Hold();
-      preInput = hld;
+      input = hld;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
-      if (dropped && preInput == down) return;
+      if (insert && input == down) return;
       frame += drop / 2; // speed up
-      dropped = false;
-      preInput = down;
+      insert = false;
+      input = down;
     } else { // None
-      preInput = 0;
+      input = 0;
     }
   }
 }
