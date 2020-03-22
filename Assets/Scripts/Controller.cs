@@ -23,7 +23,6 @@ public class Controller : MonoBehaviour {
   void Delete() {
     if (frame == delete) {
       board.Delete();
-      board.Render();
     } else {
       board.Deleting();
     }
