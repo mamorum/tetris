@@ -10,8 +10,8 @@ public class Board {
   Hold hold = new Hold();
   Controller c;
   internal void Init(Controller ct) {
-    c = ct; next.Init(c); hold.Init(c);
-    //grid = c.cells.grid;
+    c = ct;
+    next.Init(c); hold.Init(c);
     cells = c.cells.main;
     s.id = next.Id();
     PutBlock();
@@ -88,20 +88,15 @@ public class Board {
     PutBlock();
     FixBlock();
   }
-  List<int> delete = new List<int>();
-  bool HasDelete() {
-    for (int y = 1; y < 22; y++) {
-      for (int x = 1; x < 11; x++) {
-        if (cells[x, y].id == Blocks.empty) break;
-        if (x == 10) delete.Add(y);
-      }
-    }
-    if (delete.Count != 0) {
-      c.del = true;
-      return true;
-    } else {
-      return false;
-    }
+  void NextBlock() {
+    s.id = next.Id();
+    PutBlock();
+    CheckEnd();
+    FixBlock();
+  }
+  void CheckEnd() {
+    XY[] r = Blocks.Relatives(s);
+    if (!IsEmpty(s.x, s.y, r)) c.end = true;
   }
   internal void Delete() {
     int line = delete.Count;
@@ -125,15 +120,16 @@ public class Board {
       }
     }
   }
-  void NextBlock() {
-    s.id = next.Id();
-    PutBlock();
-    CheckEnd();
-    FixBlock();
-  }
-  void CheckEnd() {
-    XY[] r = Blocks.Relatives(s);
-    if (!IsEmpty(s.x, s.y, r)) c.end = true;
+  List<int> delete = new List<int>();
+  void CheckDelete() {
+    for (int y = 1; y < 22; y++) {
+      for (int x = 1; x < 11; x++) {
+        if (cells[x, y].id == Blocks.empty) break;
+        if (x == 10) delete.Add(y);
+      }
+    }
+    if (delete.Count == 0) NextBlock();
+    else c.del = true;
   }
   internal void Drop() {
     c.frame = 0;
@@ -142,8 +138,7 @@ public class Board {
     //-> dropped
     c.dropped = true;
     hold.used = false;
-    if (HasDelete()) return;
-    NextBlock();
+    CheckDelete();
   }
   internal void Render() {
     for (int y = 1; y < 22; y++) {
