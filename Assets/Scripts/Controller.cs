@@ -5,17 +5,22 @@ using UnityEngine;
 public class Controller : MonoBehaviour {
   public Camera cam; public Colors colors;
   public Cells cells; public Score score;
+  public End end;
   Board board = new Board();
   void Start() {
     colors.Init(this); cells.Init(this);
-    board.Init(this); board.Render();
+    board.Init(this); end.Init(this);
+    board.Render();
   }
   internal bool
-    end = false, del = false;
+    ended = false, del = false;
   internal int frame = 0;
   int drop = 60, delete = 30;
   void Update() {
-    if (end) return;
+    if (ended) {
+      end.Process();
+      return;
+    }
     frame++;
     if (del) Delete();
     else Process();
