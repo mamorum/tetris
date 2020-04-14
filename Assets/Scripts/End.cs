@@ -31,7 +31,8 @@ public class End : MonoBehaviour {
     menu[i].color = color;
   }
   internal void Process() {
-    if (Input.GetButton("Fire3")) { // Space or 〇
+    if (Input.GetButton("Fire3") || Input.GetKey(KeyCode.Return)) {
+      // Space or 〇 || Enter
       if (selected == 0) Restart();
       else Quit();
     } else if (Input.GetButtonDown("Vertical")) {
@@ -44,7 +45,7 @@ public class End : MonoBehaviour {
   }
   void Restart() {
     gameObject.SetActive(false);
-    c.enabled = false;
+    c.Restart();
     // TODO: ボードのリセットなど
   }
   void Quit() {

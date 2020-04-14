@@ -5,11 +5,15 @@ using UnityEngine;
 public class Hold {
   Cell[,] cells;
   Status s = new Status();
-  internal bool used = false;
   Controller c;
+  internal bool used;
   internal void Init(Controller ct) {
     c = ct;
     cells = c.cells.hold;
+    Reset();
+  }
+  internal void Reset() {
+    used = false;
     s.id = Blocks.empty;
   }
   internal bool IsEmpty(int blockId) {
@@ -22,7 +26,8 @@ public class Hold {
     Show();
     return held;
   }
-  void Hide() {
+  internal void Hide() {
+    if (IsEmpty(s.id)) return;
     cells[s.x, s.y].ToBackground();
     XY[] r = Blocks.Relatives(s);
     int rx, ry;

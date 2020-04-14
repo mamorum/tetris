@@ -4,18 +4,29 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour {
   public Camera cam; public Colors colors;
-  public Cells cells; public Score score;
-  public End end;
+  public Cells cells; public End end;
+  public Score score;
   Board board = new Board();
+  internal bool ended, del;
+  internal int frame;
+  int drop = 60, delete = 30;
   void Start() {
+    ResetVariables();
     colors.Init(this); cells.Init(this);
     board.Init(this); end.Init(this);
+    score.Clear(); board.Render();
+  }
+  void ResetVariables() {
+    ended = false; del = false;
+    insert = false; input = 0;
+    frame = 0;
+  }
+  internal void Restart() {
+    ResetVariables();
+    score.Clear();
+    board.Reset();
     board.Render();
   }
-  internal bool
-    ended = false, del = false;
-  internal int frame = 0;
-  int drop = 60, delete = 30;
   void Update() {
     if (ended) {
       end.Process();
@@ -42,7 +53,8 @@ public class Controller : MonoBehaviour {
   }
   //-> user input
   readonly int
-    left = 1, right = 2, rotate = 3, hld = 4, down = 5;
+    left = 1, right = 2, //rotate = 3, hld = 4,
+    down = 5;
   int input = 0;
   internal bool insert = false;
   internal void HandleInput() {
@@ -54,14 +66,10 @@ public class Controller : MonoBehaviour {
       if (input == right) return;
       board.MoveBlock(1, 0);
       input = right;
-    } else if (Input.GetButton("Fire3")) { // Space or 〇
-      if (input == rotate) return;
+    } else if (Input.GetButtonDown("Fire3")) { // Space or 〇
       board.RotateBlock();
-      input = rotate;
-    } else if (Input.GetButton("Jump")) { // H or △
-      if (input == hld) return;
+    } else if (Input.GetButtonDown("Jump")) { // H or △
       board.Hold();
-      input = hld;
     } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
       if (insert && input == down) return;
       frame += drop / 2; // speed up

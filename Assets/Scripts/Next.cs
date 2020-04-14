@@ -5,21 +5,23 @@ using UnityEngine;
 public class Next {
   Cell[,] cells;  
   Status[] queue1, queue2;
-  int[] ids; int count = 0, swap;
-  bool show = false;
+  int[] ids; int swap;
+  int count; bool show;
   Controller c;
   internal void Init(Controller ct) {
     c = ct;
     cells = c.cells.next;
-    //-> create block ids
-    ids = new int[] {
+    ids = new int[] { //-> block ids
       Blocks.i, Blocks.o, Blocks.s, Blocks.z,
       Blocks.j, Blocks.l, Blocks.t
     };
-    //-> prepare queues
     CreateQueue();
+    Reset();
+  }
+  internal void Reset() {
     Shuffle(ids, queue1);
     Shuffle(ids, queue2);
+    count = 0; show = false;
   }
   void CreateQueue() {
     int len = ids.Length;
@@ -67,7 +69,7 @@ public class Next {
     }
     return next1;
   }
-  void Hide() {
+  internal void Hide() {
     Status s; XY[] r;
     int rx, ry;
     for (int j = 0; j < 3; j++) {

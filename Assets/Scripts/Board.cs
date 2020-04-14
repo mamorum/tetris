@@ -10,10 +10,14 @@ public class Board {
   List<int> delete = new List<int>();
   internal void Init(Controller ct) {
     c = ct; cells = c.cells.main;
-    next.Init(c); hold.Init(c);    
-    s.id = next.Id();
-    InsertBlock();
-    ShowBlock();
+    next.Init(c); hold.Init(c);
+    NextBlock();
+  }
+  internal void Reset() {
+    next.Hide(); next.Reset();
+    hold.Hide(); hold.Reset();
+    ClearCells();
+    NextBlock();
   }
   void InsertBlock() {
     s.XY(5, 20); // first place
@@ -21,7 +25,7 @@ public class Board {
     Blocks.ResetRotate(s);
     c.insert = true;
   }
-  void ShowBlock() {
+  void FixBlock() {
     cells[s.x, s.y].id = s.id;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
@@ -60,10 +64,10 @@ public class Board {
     if (IsEmpty(nx, ny, r)) {
       s.x = nx;
       s.y = ny;
-      ShowBlock();
+      FixBlock();
       return true;
     }
-    ShowBlock();
+    FixBlock();
     return false;
   }
 
@@ -74,7 +78,7 @@ public class Board {
     Blocks.Rotate(s);
     XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) s.rotate = cr;
-    ShowBlock();
+    FixBlock();
   }
   internal void Hold() {
     if (hold.used) return;
@@ -86,13 +90,13 @@ public class Board {
     c.frame = 0;
     hold.used = true;
     InsertBlock();
-    ShowBlock();
+    FixBlock();
   }
   void NextBlock() {
     s.id = next.Id();
     InsertBlock();
     CheckEnd();
-    ShowBlock();
+    FixBlock();
   }
   void CheckEnd() {
     XY[] r = Blocks.Relatives(s);
@@ -107,6 +111,13 @@ public class Board {
     //-> dropped. no space to move.
     hold.used = false;
     CheckDelete();
+  }
+  void ClearCells() {
+    for (int y = 1; y < 22; y++) {
+      for (int x = 1; x < 11; x++) {
+        cells[x, y].id = Blocks.empty;
+      }
+    }
   }
   void CheckDelete() {
     for (int y = 1; y < 22; y++) {
