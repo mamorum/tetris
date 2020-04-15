@@ -5,24 +5,26 @@ using UnityEngine;
 public class Controller : MonoBehaviour {
   public Camera cam; public Colors colors;
   public Cells cells; public End end;
-  public Score score;
+  public Ready ready; public Score score;
   Board board = new Board();
-  internal bool ended, del;
+  internal bool wait, ended, del;
   internal int frame;
   int drop = 60, delete = 30;
   void Start() {
     ResetVariables();
     colors.Init(this); cells.Init(this);
     board.Init(this); end.Init(this);
-    score.Clear(); board.Render();
+    ready.Clear(); score.Clear();
+    board.Render();
   }
   void ResetVariables() {
-    ended = false; del = false;
-    insert = false; input = 0;
-    frame = 0;
+    wait = true; ended = false;
+    del = false; insert = false;
+    input = 0; frame = 0;
   }
   internal void Restart() {
     ResetVariables();
+    ready.Clear();
     score.Clear();
     board.Reset();
     board.Render();
@@ -33,8 +35,18 @@ public class Controller : MonoBehaviour {
       return;
     }
     frame++;
-    if (del) Delete();
+    if (wait) Wait();
+    else if (del) Delete();
     else Process();
+  }
+  void Wait() {
+    if (frame == 60) {
+      ready.Go();
+    } else if (frame == 90) {
+      wait = false;
+      frame = 0;
+      ready.Disable();
+    }
   }
   void Delete() {
     if (frame == delete) {
