@@ -46,7 +46,6 @@ public class End : MonoBehaviour {
   void Restart() {
     gameObject.SetActive(false);
     c.Restart();
-    // TODO: ボードのリセットなど
   }
   void Quit() {
     #if UNITY_EDITOR

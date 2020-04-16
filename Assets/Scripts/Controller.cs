@@ -19,8 +19,7 @@ public class Controller : MonoBehaviour {
   }
   void ResetVariables() {
     wait = true; ended = false;
-    del = false; insert = false;
-    input = 0; frame = 0;
+    del = false; frame = 0;
   }
   internal void Restart() {
     ResetVariables();
@@ -43,9 +42,10 @@ public class Controller : MonoBehaviour {
     if (frame == 60) {
       ready.Go();
     } else if (frame == 90) {
-      wait = false;
       frame = 0;
+      wait = false;
       ready.Disable();
+      board.Drop();
     }
   }
   void Delete() {
@@ -64,31 +64,24 @@ public class Controller : MonoBehaviour {
     board.Render();
   }
   //-> user input
-  readonly int
-    left = 1, right = 2, //rotate = 3, hld = 4,
-    down = 5;
-  int input = 0;
-  internal bool insert = false;
   internal void HandleInput() {
-    if (Input.GetAxisRaw("Horizontal") == -1) { // Left
-      if (input == left) return;
-      board.MoveBlock(-1, 0);
-      input = left;
-    } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
-      if (input == right) return;
-      board.MoveBlock(1, 0);
-      input = right;
-    } else if (Input.GetButtonDown("Fire3")) { // Space or 〇
+    if (Input.GetAxisRaw("Vertical") == -1) { // Down
+      if (!board.insert) frame += drop / 2; // speed up
+    } else {
+      board.insert = false;
+    }
+    if (Input.GetButtonDown("Horizontal")) {
+      if (Input.GetAxisRaw("Horizontal") == -1) { // Left
+        board.MoveBlock(-1, 0);
+      } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
+        board.MoveBlock(1, 0);
+      }
+    }
+    if (Input.GetButtonDown("Fire3")) { // Space or 〇
       board.RotateBlock();
-    } else if (Input.GetButtonDown("Jump")) { // H or △
+    }
+    if (Input.GetButtonDown("Jump")) { // H or △
       board.Hold();
-    } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
-      if (insert && input == down) return;
-      frame += drop / 2; // speed up
-      insert = false;
-      input = down;
-    } else { // None
-      input = 0;
     }
   }
 }

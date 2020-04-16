@@ -8,22 +8,23 @@ public class Board {
   Next next = new Next();
   Hold hold = new Hold();
   List<int> delete = new List<int>();
+  internal bool insert = false;
   internal void Init(Controller ct) {
     c = ct; cells = c.cells.main;
     next.Init(c); hold.Init(c);
     NextBlock();
   }
   internal void Reset() {
+    insert = false;
     next.Hide(); next.Reset();
     hold.Hide(); hold.Reset();
-    ClearCells();
-    NextBlock();
+    ClearCells(); NextBlock();
   }
   void InsertBlock() {
     s.XY(5, 20); // first place
     if (s.id == Blocks.i) s.y++;
     Blocks.ResetRotate(s);
-    c.insert = true;
+    insert = true;
   }
   void FixBlock() {
     cells[s.x, s.y].id = s.id;
