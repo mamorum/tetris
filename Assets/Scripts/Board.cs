@@ -102,8 +102,8 @@ public class Board {
   void CheckEnd() {
     XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) {
-      c.ended = true;
-      c.end.gameObject.SetActive(true);
+      c.end = true;
+      c.over.gameObject.SetActive(true);
     }
   }
   internal void Drop() {

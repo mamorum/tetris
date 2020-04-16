@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour {
   public Camera cam; public Colors colors;
-  public Cells cells; public End end;
+  public Cells cells; public Over over;
   public Ready ready; public Score score;
   Board board = new Board();
-  internal bool wait, ended, del;
+  internal bool wait, end, del;
   internal int frame;
   int drop = 60, delete = 30;
   void Start() {
     ResetVariables();
     colors.Init(this); cells.Init(this);
-    board.Init(this); end.Init(this);
+    board.Init(this); over.Init(this);
     ready.Clear(); score.Clear();
     board.Render();
   }
   void ResetVariables() {
-    wait = true; ended = false;
+    wait = true; end = false;
     del = false; frame = 0;
   }
   internal void Restart() {
@@ -29,8 +29,8 @@ public class Controller : MonoBehaviour {
     board.Render();
   }
   void Update() {
-    if (ended) {
-      end.Process();
+    if (end) {
+      over.Process();
       return;
     }
     frame++;

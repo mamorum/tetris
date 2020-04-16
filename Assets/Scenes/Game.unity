@@ -908,7 +908,7 @@ MonoBehaviour:
   cam: {fileID: 519420031}
   colors: {fileID: 172720311}
   cells: {fileID: 1598488834}
-  end: {fileID: 1108660502}
+  over: {fileID: 1108660502}
   ready: {fileID: 1658598320}
   score: {fileID: 1389770320}
 --- !u!1 &996789544
@@ -1092,7 +1092,7 @@ GameObject:
   - component: {fileID: 1108660500}
   - component: {fileID: 1108660502}
   m_Layer: 5
-  m_Name: End
+  m_Name: Over
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

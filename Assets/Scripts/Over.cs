@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class End : MonoBehaviour {
+public class Over : MonoBehaviour {
   public Text[] menu;
   int focusSize, size;
   FontStyle focusStyle, style;
@@ -31,8 +31,9 @@ public class End : MonoBehaviour {
     menu[i].color = color;
   }
   internal void Process() {
-    if (Input.GetButton("Fire3") || Input.GetKey(KeyCode.Return)) {
-      // Space or 〇 || Enter
+    if (Input.GetButton("Fire3")
+      || Input.GetKey(KeyCode.Return)
+    ) { // Space or 〇 || Enter
       if (selected == 0) Restart();
       else Quit();
     } else if (Input.GetButtonDown("Vertical")) {
