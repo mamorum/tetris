@@ -907,6 +907,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 519420031}
   colors: {fileID: 172720311}
+  canvas: {fileID: 2012141940}
   cells: {fileID: 1598488834}
   over: {fileID: 1108660502}
   ready: {fileID: 1658598320}

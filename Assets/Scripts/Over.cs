@@ -30,12 +30,16 @@ public class Over : MonoBehaviour {
     menu[i].fontStyle = style;
     menu[i].color = color;
   }
+  void Restart() {
+    gameObject.SetActive(false);
+    c.Restart();
+  }
   internal void Process() {
     if (Input.GetButton("Fire3")
       || Input.GetKey(KeyCode.Return)
     ) { // Space or 〇 || Enter
       if (selected == 0) Restart();
-      else Quit();
+      else c.Quit();
     } else if (Input.GetButtonDown("Vertical")) {
       if (Input.GetAxisRaw("Vertical") == 1) { // Up
         Focus(0); Unfocus(1);
@@ -43,16 +47,5 @@ public class Over : MonoBehaviour {
         Focus(1); Unfocus(0);
       }
     }
-  }
-  void Restart() {
-    gameObject.SetActive(false);
-    c.Restart();
-  }
-  void Quit() {
-    #if UNITY_EDITOR
-      UnityEditor.EditorApplication.isPlaying = false;
-    #elif UNITY_STANDALONE
-      UnityEngine.Application.Quit();
-    #endif
   }
 }

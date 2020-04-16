@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
-  public Camera cam; public Colors colors;
-  public Cells cells; public Over over;
-  public Ready ready; public Score score;
+  public Camera cam; public Canvas canvas;
+  public Colors colors; public Cells cells;
+  public Over over; public Ready ready;
+  public Score score;
   Board board = new Board();
   internal bool wait, end, del;
   internal int frame;
@@ -83,6 +84,15 @@ public class Controller : MonoBehaviour {
     if (Input.GetButtonDown("Jump")) { // H or △
       board.Hold();
     }
+  }
+  internal void Quit() {
+    cells.Disable();
+    canvas.gameObject.SetActive(false);
+    #if UNITY_EDITOR
+      UnityEditor.EditorApplication.isPlaying = false;
+    #elif UNITY_STANDALONE
+      UnityEngine.Application.Quit();
+    #endif
   }
 }
 

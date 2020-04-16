@@ -63,6 +63,15 @@ public class Cells : MonoBehaviour {
       }
     }
   }
+  Cell Back(float x, float y) {
+    return Create(Blocks.empty, x, y, c.colors.back);
+  }
+  Cell Empty(float x, float y) {
+    return Create(Blocks.empty, x, y, c.colors.empty);
+  }
+  Cell Wall(float x, float y) {
+    return Create(Blocks.wall, x, y, c.colors.wall);
+  }
   Cell Create(int id, float x, float y, Color clr) {
     GameObject g = Instantiate(prfbCell);
     cells.Add(g); // to destroy object later.
@@ -74,13 +83,9 @@ public class Cells : MonoBehaviour {
     s.transform.position = pos;
     return new Cell(id, s, c.colors);
   }
-  Cell Back(float x, float y) {
-    return Create(Blocks.empty, x, y, c.colors.back);
-  }
-  Cell Empty(float x, float y) {
-    return Create(Blocks.empty, x, y, c.colors.empty);
-  }
-  Cell Wall(float x, float y) {
-    return Create(Blocks.wall, x, y, c.colors.wall);
+  internal void Disable() {
+    foreach (GameObject o in cells) {
+      Destroy(o);
+    }
   }
 }
