@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class Colors : MonoBehaviour {
   public Color empty, wall, i, o, s, z, j, l, t;
-  Dictionary<int, Color> colors = new Dictionary<int, Color>();
-  internal Color Get(int id) { return colors[id]; }
   internal Color back;
   internal void Init(Controller c) {
     back = c.cam.backgroundColor;
-    colors.Add(Blocks.empty, empty);
-    colors.Add(Blocks.wall, wall); colors.Add(Blocks.i, i);
-    colors.Add(Blocks.o, o); colors.Add(Blocks.s, s);
-    colors.Add(Blocks.z, z); colors.Add(Blocks.j, j);
-    colors.Add(Blocks.l, l); colors.Add(Blocks.t, t);
+  }
+  internal Color Get(int id) {
+    if (Blocks.wall == id) return wall;
+    else if (Blocks.i == id) return i;
+    else if (Blocks.o == id) return o;
+    else if (Blocks.s == id) return s;
+    else if (Blocks.z == id) return z;
+    else if (Blocks.j == id) return j;
+    else if (Blocks.l == id) return l;
+    else if (Blocks.t == id) return t;
+    else return empty;
   }
 }
