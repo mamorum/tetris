@@ -19,6 +19,9 @@ public class Over : MonoBehaviour {
     style = menu[1].fontStyle;
     color = menu[1].color;
   }
+  internal void Enable() {
+    gameObject.SetActive(true);
+  }
   void Focus(int i) {
     selected = i;
     menu[i].fontSize = focusSize;
@@ -34,7 +37,7 @@ public class Over : MonoBehaviour {
     gameObject.SetActive(false);
     c.Restart();
   }
-  internal void Process() {
+  void Update() {
     if (Input.GetButton("Fire3")
       || Input.GetKey(KeyCode.Return)
     ) { // Space or 〇 || Enter

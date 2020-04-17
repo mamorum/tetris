@@ -2,23 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board {
+public class Board : MonoBehaviour {
   Controller c; Cell[,] cells;
   Status s = new Status();
   Next next = new Next();
   Hold hold = new Hold();
-  List<int> delete = new List<int>();
-  internal bool insert = false;
+  List<int> deletes = new List<int>();
+  bool insert, del; int frm;
+  int drop = 60, delete = 30;
   internal void Init(Controller ct) {
     c = ct; cells = c.cells.main;
     next.Init(c); hold.Init(c);
+    ResetVariables();
     NextBlock();
   }
-  internal void Reset() {
-    insert = false;
+  void ResetVariables() {
+    insert = false; del = false;
+    frm = 0;
+  }
+  internal void Resets() {
+    ResetVariables();
     next.Hide(); next.Reset();
     hold.Hide(); hold.Reset();
     ClearCells(); NextBlock();
+    gameObject.SetActive(false);
+  }
+  void Update() {
+    frm++;
+    if (del) {
+      if (frm == delete) Delete();
+      else Deleting();
+    } else {
+      HandleInput();
+      if (frm >= drop) Drop();
+      Render();
+    }
+  }
+  internal void HandleInput() {
+    if (Input.GetAxisRaw("Vertical") == -1) { // Down
+      if (!insert) frm += drop / 2; // speed up
+    } else {
+      insert = false;
+    }
+    if (Input.GetButtonDown("Horizontal")) {
+      if (Input.GetAxisRaw("Horizontal") == -1) { // Left
+        MoveBlock(-1, 0);
+      } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
+        MoveBlock(1, 0);
+      }
+    }
+    if (Input.GetButtonDown("Fire3")) { // Space or 〇
+      RotateBlock();
+    }
+    if (Input.GetButtonDown("Jump")) { // H or △
+      Hold();
+    }
   }
   void InsertBlock() {
     s.XY(5, 20); // first place
@@ -88,7 +126,7 @@ public class Board {
     if (hold.IsEmpty(s.id)) {
       s.id = next.Id(); // first time
     }
-    c.frame = 0;
+    frm = 0;
     hold.used = true;
     InsertBlock();
     FixBlock();
@@ -102,12 +140,12 @@ public class Board {
   void CheckEnd() {
     XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) {
-      c.end = true;
-      c.over.gameObject.SetActive(true);
+      gameObject.SetActive(false);
+      c.over.Enable();
     }
   }
   internal void Drop() {
-    c.frame = 0;
+    frm = 0;
     if (MoveBlock(0, -1)) return;
     //-> dropped. no space to move.
     hold.used = false;
@@ -124,29 +162,29 @@ public class Board {
     for (int y = 1; y < 22; y++) {
       for (int x = 1; x < 11; x++) {
         if (cells[x, y].id == Blocks.empty) break;
-        if (x == 10) delete.Add(y);
+        if (x == 10) deletes.Add(y);
       }
     }
-    if (delete.Count == 0) NextBlock();
-    else c.del = true;
+    if (deletes.Count == 0) NextBlock();
+    else del = true;
   }
   internal void Delete() {
-    int line = delete.Count;
+    int line = deletes.Count;
     for (int i = 0; i < line; i++) {
-      for (int y = delete[i] - i; y < 22; y++) {
+      for (int y = deletes[i] - i; y < 22; y++) {
         for (int x = 1; x < 11; x++) {
           cells[x, y].id = cells[x, y + 1].id;
         }
       }
     }
-    c.del = false;
-    c.frame = 0;
+    frm = 0;
+    del = false;
     c.score.Add(line);
-    delete.Clear();
+    deletes.Clear();
     NextBlock();
   }
   internal void Deleting() {
-    foreach (int y in delete) {
+    foreach (int y in deletes) {
       for (int x = 1; x < 11; x++) {
         cells[x, y].AddAlpha(-0.03f);
       }
