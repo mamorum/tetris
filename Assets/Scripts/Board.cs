@@ -3,44 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Board : MonoBehaviour {
-  Controller c; Cell[,] cells;
+  public Delete del;
+  internal Cell[,] cells;
+  internal int //-> range of inside wall
+    minX = 1, maxX, minY = 1, maxY;
   Status s = new Status();
   Next next = new Next();
   Hold hold = new Hold();
-  List<int> deletes = new List<int>();
-  bool insert, del; int frm;
-  int drop = 60, delete = 30;
-  int minX = 1, maxX; // range of inside wall
-  int minY = 1, maxY; // range of inside wall
+  bool insert; int frm;
+  int drop = 60;
+  Controller c;
   internal void Init(Controller ct) {
     c = ct; cells = c.cells.main;
     maxX = cells.GetLength(0) - 1;
     maxY = cells.GetLength(1) - 2;
-    next.Init(c); hold.Init(c);
+    del.Init(c); next.Init(c); hold.Init(c);
     ResetVariables();
     NextBlock();
   }
   void ResetVariables() {
-    insert = false; del = false;
-    frm = 0;
+    insert = false; frm = 0;
   }
   internal void Resets() {
     ResetVariables();
     next.Hide(); next.Reset();
     hold.Hide(); hold.Reset();
-    ClearCells(); NextBlock();
+    del.All(); NextBlock();
     gameObject.SetActive(false);
   }
   void Update() {
     frm++;
-    if (del) {
-      if (frm == delete) Delete();
-      else Deleting();
-    } else {
-      HandleInput();
-      if (frm >= drop) Drop();
-      Render();
-    }
+    HandleInput();
+    if (frm >= drop) Drop();
+    Render();
   }
   internal void HandleInput() {
     if (Input.GetAxisRaw("Vertical") == -1) { // Down
@@ -135,7 +130,7 @@ public class Board : MonoBehaviour {
     InsertBlock();
     FixBlock();
   }
-  void NextBlock() {
+  internal void NextBlock() {
     s.id = next.Id();
     InsertBlock();
     CheckEnd();
@@ -153,46 +148,7 @@ public class Board : MonoBehaviour {
     if (MoveBlock(0, -1)) return;
     //-> dropped. no space to move.
     hold.used = false;
-    CheckDelete();
-  }
-  void ClearCells() {
-    for (int y = minY; y < maxY; y++) {
-      for (int x = minX; x < maxX; x++) {
-        cells[x, y].id = Blocks.empty;
-      }
-    }
-  }
-  void CheckDelete() {
-    for (int y = minY; y < maxY; y++) {
-      for (int x = minX; x < maxX; x++) {
-        if (cells[x, y].id == Blocks.empty) break;
-        if (x == 10) deletes.Add(y);
-      }
-    }
-    if (deletes.Count == 0) NextBlock();
-    else del = true;
-  }
-  internal void Delete() {
-    int line = deletes.Count;
-    for (int i = 0; i < line; i++) {
-      for (int y = deletes[i] - i; y < maxY; y++) {
-        for (int x = minX; x < maxX; x++) {
-          cells[x, y].id = cells[x, y + 1].id;
-        }
-      }
-    }
-    frm = 0;
-    del = false;
-    c.score.Add(line);
-    deletes.Clear();
-    NextBlock();
-  }
-  internal void Deleting() {
-    foreach (int y in deletes) {
-      for (int x = minX; x < maxX; x++) {
-        cells[x, y].AddAlpha(-0.03f);
-      }
-    }
+    del.Check();
   }
   internal void Render() {
     for (int y = minY; y < maxY; y++) {
