@@ -10,8 +10,12 @@ public class Board : MonoBehaviour {
   List<int> deletes = new List<int>();
   bool insert, del; int frm;
   int drop = 60, delete = 30;
+  int minX = 1, maxX; // range of inside wall
+  int minY = 1, maxY; // range of inside wall
   internal void Init(Controller ct) {
     c = ct; cells = c.cells.main;
+    maxX = cells.GetLength(0) - 1;
+    maxY = cells.GetLength(1) - 2;
     next.Init(c); hold.Init(c);
     ResetVariables();
     NextBlock();
@@ -152,15 +156,15 @@ public class Board : MonoBehaviour {
     CheckDelete();
   }
   void ClearCells() {
-    for (int y = 1; y < 22; y++) {
-      for (int x = 1; x < 11; x++) {
+    for (int y = minY; y < maxY; y++) {
+      for (int x = minX; x < maxX; x++) {
         cells[x, y].id = Blocks.empty;
       }
     }
   }
   void CheckDelete() {
-    for (int y = 1; y < 22; y++) {
-      for (int x = 1; x < 11; x++) {
+    for (int y = minY; y < maxY; y++) {
+      for (int x = minX; x < maxX; x++) {
         if (cells[x, y].id == Blocks.empty) break;
         if (x == 10) deletes.Add(y);
       }
@@ -171,8 +175,8 @@ public class Board : MonoBehaviour {
   internal void Delete() {
     int line = deletes.Count;
     for (int i = 0; i < line; i++) {
-      for (int y = deletes[i] - i; y < 22; y++) {
-        for (int x = 1; x < 11; x++) {
+      for (int y = deletes[i] - i; y < maxY; y++) {
+        for (int x = minX; x < maxX; x++) {
           cells[x, y].id = cells[x, y + 1].id;
         }
       }
@@ -185,14 +189,14 @@ public class Board : MonoBehaviour {
   }
   internal void Deleting() {
     foreach (int y in deletes) {
-      for (int x = 1; x < 11; x++) {
+      for (int x = minX; x < maxX; x++) {
         cells[x, y].AddAlpha(-0.03f);
       }
     }
   }
   internal void Render() {
-    for (int y = 1; y < 22; y++) {
-      for (int x = 1; x < 11; x++) {
+    for (int y = minY; y < maxY; y++) {
+      for (int x = minX; x < maxX; x++) {
         cells[x, y].Render();
       }
     }
