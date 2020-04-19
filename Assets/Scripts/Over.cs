@@ -38,17 +38,14 @@ public class Over : MonoBehaviour {
     c.Restart();
   }
   void Update() {
-    if (Input.GetButton("Fire3")
-      || Input.GetKey(KeyCode.Return)
-    ) { // Space or 〇 || Enter
+    if (Key.Rotate()) {
       if (selected == 0) Restart();
       else c.Quit();
-    } else if (Input.GetButtonDown("Vertical")) {
-      if (Input.GetAxisRaw("Vertical") == 1) { // Up
-        Focus(0); Unfocus(1);
-      } else if (Input.GetAxisRaw("Vertical") == -1) { // Down
-        Focus(1); Unfocus(0);
-      }
+    }
+    if (Key.Up()) {
+      Focus(0); Unfocus(1);
+    } else if (Key.Down()) {
+      Focus(1); Unfocus(0);
     }
   }
 }

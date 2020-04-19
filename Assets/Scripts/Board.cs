@@ -38,24 +38,15 @@ public class Board : MonoBehaviour {
     Render();
   }
   internal void HandleInput() {
-    if (Input.GetAxisRaw("Vertical") == -1) { // Down
+    if (Key.PressingDown()) {
       if (!insert) frm += drop / 2; // speed up
     } else {
       insert = false;
-    }
-    if (Input.GetButtonDown("Horizontal")) {
-      if (Input.GetAxisRaw("Horizontal") == -1) { // Left
-        MoveBlock(-1, 0);
-      } else if (Input.GetAxisRaw("Horizontal") == 1) { // Right
-        MoveBlock(1, 0);
-      }
-    }
-    if (Input.GetButtonDown("Fire3")) { // Space or 〇
-      RotateBlock();
-    }
-    if (Input.GetButtonDown("Jump")) { // H or △
-      Hold();
-    }
+    }    
+    if (Key.Left()) Move(-1, 0);
+    else if (Key.Right()) Move(1, 0);
+    if (Key.Hold()) Hold();
+    else if (Key.Rotate()) Rotate();
   }
   void InsertBlock() {
     s.XY(5, 20); // first place
@@ -94,7 +85,7 @@ public class Board : MonoBehaviour {
     }
     return true;
   }
-  internal bool MoveBlock(int x, int y) {
+  internal bool Move(int x, int y) {
     HideBlock();
     int nx = s.x + x;
     int ny = s.y + y;
@@ -109,7 +100,7 @@ public class Board : MonoBehaviour {
     return false;
   }
 
-  internal void RotateBlock() {
+  internal void Rotate() {
     if (s.id == Blocks.o) return; // none
     HideBlock();
     int cr = s.rotate;
@@ -145,7 +136,7 @@ public class Board : MonoBehaviour {
   }
   internal void Drop() {
     frm = 0;
-    if (MoveBlock(0, -1)) return;
+    if (Move(0, -1)) return;
     //-> dropped. no space to move.
     hold.used = false;
     del.Check();
