@@ -3,22 +3,21 @@ using UnityEngine.UI;
 
 public class Fps : MonoBehaviour {
   public Text txt;
-  internal static readonly int rate = 60;
   internal void Init() {
-    Application.targetFrameRate = rate;
+    Application.targetFrameRate = 60;
     gameObject.SetActive(true);
   }
-  int frame = 0;
+  int frm = 0;
   float sec = 0, fps = 0;
   void Update() {
-    frame++;
+    frm++;
     sec += Time.deltaTime;
     if (sec >= 1f) {
-      fps = frame / sec;
+      fps = frm / sec;
       txt.text = string.Format(
         "{0:00}", fps
       ) + " fps";
-      frame = 0;
+      frm = 0;
       sec = 0;
     }
   }
