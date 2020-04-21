@@ -10,14 +10,15 @@ public class Board : MonoBehaviour {
   Status s = new Status();
   Next next = new Next();
   Hold hold = new Hold();
-  bool insert; int frm; int drop = 60;
+  int drop = 60, fast = 20;
+  bool insert; int frm;
   internal void Init(Controller ct) {
     c = ct; cells = c.cells.main;
     maxX = cells.GetLength(0) - 1;
     maxY = cells.GetLength(1) - 2;
     del.Init(c); next.Init(c); hold.Init(c);
     ResetVariables();
-    NextBlock();
+    Next();
   }
   void ResetVariables() {
     insert = false; frm = 0;
@@ -26,7 +27,7 @@ public class Board : MonoBehaviour {
     ResetVariables();
     next.Hide(); next.Reset();
     hold.Hide(); hold.Reset();
-    del.All(); NextBlock();
+    del.All(); Next();
     gameObject.SetActive(false);
   }
   void Update() {
@@ -37,7 +38,7 @@ public class Board : MonoBehaviour {
   }
   internal void HandleInput() {
     if (Key.PressingDown()) {
-      if (!insert) frm += drop / 2; // speed up
+      if (!insert) frm += fast;
     } else {
       insert = false;
     }    
@@ -46,13 +47,18 @@ public class Board : MonoBehaviour {
     if (Key.Hold()) Hold();
     else if (Key.Rotate()) Rotate();
   }
-  void InsertBlock() {
+  void Insert() {
     s.XY(5, 20); // first place
     if (s.id == Blocks.i) s.y++;
     Blocks.ResetRotate(s);
     insert = true;
+    //-> check collision
+    XY[] r = Blocks.Relatives(s);
+    if (IsEmpty(s.x, s.y, r)) return;
+    gameObject.SetActive(false);
+    c.over.Enable(); // game over
   }
-  void FixBlock() {
+  void Fix() {
     cells[s.x, s.y].id = s.id;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
@@ -61,7 +67,7 @@ public class Board : MonoBehaviour {
       cells[s.x + cx, s.y + cy].id = s.id;
     }
   }
-  void HideBlock() {
+  void Hide() {
     cells[s.x, s.y].id = Blocks.empty;
     XY[] r = Blocks.Relatives(s);
     int cx, cy;
@@ -84,53 +90,43 @@ public class Board : MonoBehaviour {
     return true;
   }
   internal bool Move(int x, int y) {
-    HideBlock();
+    Hide();
     int nx = s.x + x;
     int ny = s.y + y;
     XY[] r = Blocks.Relatives(s);
-    if (IsEmpty(nx, ny, r)) {
-      s.x = nx;
-      s.y = ny;
-      FixBlock();
-      return true;
-    }
-    FixBlock();
-    return false;
+    bool move = IsEmpty(nx, ny, r);
+    if (move) { s.x = nx; s.y = ny; }
+    Fix();
+    return move;
   }
 
   internal void Rotate() {
     if (s.id == Blocks.o) return; // none
-    HideBlock();
+    Hide();
     int cr = s.rotate;
     Blocks.Rotate(s);
     XY[] r = Blocks.Relatives(s);
-    if (!IsEmpty(s.x, s.y, r)) s.rotate = cr;
-    FixBlock();
+    if (!IsEmpty(s.x, s.y, r)) {
+      s.rotate = cr; // rollback
+    }
+    Fix();
   }
   internal void Hold() {
     if (hold.used) return;
-    HideBlock();
+    Hide();
     s.id = hold.Replace(s.id);
     if (hold.IsEmpty(s.id)) {
       s.id = next.Id(); // first time
     }
-    frm = 0;
     hold.used = true;
-    InsertBlock();
-    FixBlock();
+    frm = 0;
+    Insert();
+    Fix();
   }
-  internal void NextBlock() {
+  internal void Next() {
     s.id = next.Id();
-    InsertBlock();
-    CheckEnd();
-    FixBlock();
-  }
-  void CheckEnd() {
-    XY[] r = Blocks.Relatives(s);
-    if (!IsEmpty(s.x, s.y, r)) {
-      gameObject.SetActive(false);
-      c.over.Enable();
-    }
+    Insert();
+    Fix();
   }
   internal void Drop() {
     frm = 0;

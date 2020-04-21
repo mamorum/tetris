@@ -35,7 +35,7 @@ public class Delete : MonoBehaviour {
     lines.Clear();
     gameObject.SetActive(false);
     b.gameObject.SetActive(true);
-    b.NextBlock();
+    b.Next();
   }
   internal void All() {
     for (int y = b.minY; y < b.maxY; y++) {
@@ -44,6 +44,10 @@ public class Delete : MonoBehaviour {
       }
     }
   }
+  void Enable() {
+    gameObject.SetActive(true);
+    b.gameObject.SetActive(false);
+  }
   internal void Check() {
     for (int y = b.minY; y < b.maxY; y++) {
       for (int x = b.minX; x < b.maxX; x++) {
@@ -51,11 +55,7 @@ public class Delete : MonoBehaviour {
         if (x == 10) lines.Add(y);
       }
     }
-    if (lines.Count == 0) {
-      b.NextBlock();
-    } else {
-      gameObject.SetActive(true);
-      b.gameObject.SetActive(false);
-    }
+    if (lines.Count == 0) b.Next();
+    else Enable();
   }
 }

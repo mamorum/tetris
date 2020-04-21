@@ -39,11 +39,8 @@ public class Key {
   internal static bool PressingDown() {
     press = Input.GetAxisRaw("Vertical") == -1;
     if (press && pre[3]) return true;
-    if (press) {
-      pre[3] = true;
-      return false;
-    }
-    pre[3] = false;
+    if (press) pre[3] = true;
+    else pre[3] = false;
     return false;
   }
 }
