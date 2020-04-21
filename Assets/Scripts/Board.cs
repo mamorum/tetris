@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Board : MonoBehaviour {
   public Delete del;
-  internal Cell[,] cells;
+  internal Cell[,] cells; Controller c;
   internal int //-> range of inside wall
     minX = 1, maxX, minY = 1, maxY;
   Status s = new Status();
   Next next = new Next();
   Hold hold = new Hold();
-  bool insert; int frm;
-  int drop = 60;
-  Controller c;
+  bool insert; int frm; int drop = 60;
   internal void Init(Controller ct) {
     c = ct; cells = c.cells.main;
     maxX = cells.GetLength(0) - 1;

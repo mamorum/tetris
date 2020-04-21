@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Cell {
-  internal int id; // Next and Hold don't use id.
+  internal int id;
   SpriteRenderer sr; Colors colors;
   internal Cell(int i, SpriteRenderer s, Colors c) {
     id = i; sr = s; colors = c;

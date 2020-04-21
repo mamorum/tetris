@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Next {
-  Cell[,] cells;  
+  Controller c; Cell[,] cells;  
   Status[] queue1, queue2;
   int[] ids; int swap;
   int count; bool show;
-  Controller c;
   internal void Init(Controller ct) {
     c = ct;
     cells = c.cells.next;
-    ids = new int[] { //-> block ids
-      Blocks.i, Blocks.o, Blocks.s, Blocks.z,
-      Blocks.j, Blocks.l, Blocks.t
-    };
+    ids = Blocks.drops;
     CreateQueue();
     Reset();
   }

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Hold {
-  Cell[,] cells;
+  Controller c; Cell[,] cells;
   Status s = new Status();
-  Controller c;
   internal bool used;
   internal void Init(Controller ct) {
     c = ct;
