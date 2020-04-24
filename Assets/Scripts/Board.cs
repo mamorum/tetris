@@ -37,6 +37,7 @@ public class Board : MonoBehaviour {
     Render();
   }
   internal void HandleInput() {
+    Key.Handle();
     if (Key.PressingDown()) {
       if (!insert) frm += fast;
     } else {

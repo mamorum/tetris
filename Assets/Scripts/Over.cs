@@ -32,6 +32,7 @@ public class Over : MonoBehaviour {
   void Update() {
     if (delay) { Delay(); return; }
     //-> handle user input
+    Key.Handle();
     if (Key.Rotate()) {
       if (focus == 0) Restart();
       else c.Quit();
