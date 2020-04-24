@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Over : MonoBehaviour {
-  public Text title; public Text[] menu;
-  Color titleColor; Color focusColor, color;
+  public Text title; Color titleColor;
+  public Text[] menu;
+  Color focusColor, color;
   FontStyle focusStyle, style; int focusSize, size;
-  int selected; int frm; Controller c;
+  int selected; int frm; bool delay; Controller c;
   internal void Init(Controller ctrl) {
     c = ctrl;
     titleColor = title.color;
@@ -18,25 +19,26 @@ public class Over : MonoBehaviour {
     style = menu[1].fontStyle;
     color = menu[1].color;
   }
+  void TitleAlpha(float a) {
+    titleColor.a = a;
+    title.color = titleColor;
+  }
+  void EndDelay() {
+    delay = false;
+    TitleAlpha(1f);
+    title.rectTransform.localPosition = up;
+    menu[0].gameObject.SetActive(true);
+    menu[1].gameObject.SetActive(true);
+  }
   void Delay() {
     frm++;
-    if (frm < 40) return;
-    if (frm < 90) {
-      titleColor.a = titleColor.a - 0.02f;
-      title.color = titleColor;
-    } else if (frm == 90) {
-      titleColor.a = 0;
-      title.color = titleColor;
-    } else if (frm == 100) {
-      titleColor.a = 1;
-      title.color = titleColor;
-      title.rectTransform.localPosition = up;
-      menu[0].gameObject.SetActive(true);
-      menu[1].gameObject.SetActive(true);
-    }
+    if (frm < 41) return;
+    else if (frm < 90) TitleAlpha(titleColor.a - 0.02f);
+    else if (frm == 90) TitleAlpha(0f);
+    else if (frm == 100) EndDelay();
   }
   void Update() {
-    if (frm <= 100) {
+    if (delay) {
       Delay();
     } else {
       if (Key.Rotate()) {
@@ -53,7 +55,7 @@ public class Over : MonoBehaviour {
   Vector3 center = new Vector3(0, 0, 0);
   Vector3 up = new Vector3(0, 74.5f, 0);
   internal void Enable() {
-    frm = 0;
+    frm = 0; delay = true;
     title.rectTransform.localPosition = center;
     menu[0].gameObject.SetActive(false);
     menu[1].gameObject.SetActive(false);
