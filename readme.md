@@ -1,7 +1,7 @@
 Unity 2D で制作したテトリスです。
 
 ### 画面イメージ
-[![Tetris](http://img.youtube.com/vi/8w_bpKZTNu4/0.jpg)](http://www.youtube.com/watch?v=8w_bpKZTNu4 "tetris")
+[![Tetris](https://img.youtube.com/vi/LeKO05yuzxo/0.jpg)](https://www.youtube.com/watch?v=LeKO05yuzxo)
 
 ### 参考文献
 - [テトリスを1時間強で作ってみた【実況解説】- ニコニコ動画](https://www.nicovideo.jp/watch/sm8517855)
