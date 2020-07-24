@@ -88,7 +88,7 @@ public class Next {
       if (s.id == Blocks.i) ny++;
       s.y = ny;
       cells[s.x, s.y].Color(s);
-      Blocks.ResetRotate(s);
+      s.ResetRotate();
       r = Blocks.Relatives(s);
       for (int j = 0; j < r.Length; j++) {
         rx = s.x + r[j].x; ry = s.y + r[j].y;

@@ -13,21 +13,21 @@ public class Blocks : MonoBehaviour {
   }
   //-> relative points (for rotation)
   static readonly XY[][] emptyR = null, wallR = null;
-  static readonly XY[][] iR = new XY[][] {
-    XYs(XY(-1, 0), XY(1, 0), XY(2, 0)),
-    XYs(XY(0, -1), XY(0, 1), XY(0, 2))
-  };
-  static readonly XY[][] oR = new XY[][] {
-    XYs(XY(1, 0), XY(0, 1), XY(1, 1))
-  };
-  static readonly XY[][] sR = new XY[][] {
-    XYs(XY(-1, 0), XY(1, 1), XY(0, 1)),
-    XYs(XY(1, -1), XY(1, 0), XY(0, 1))
-  };
-  static readonly XY[][] zR = new XY[][] {
-    XYs(XY(1, 0), XY(-1, 1), XY(0, 1)),
-    XYs(XY(0, -1), XY(1, 0), XY(1, 1))
-  };
+  static readonly XY[]
+    iR0 = XYs(XY(-1, 0), XY(1, 0), XY(2, 0)),
+    iR1 = XYs(XY(0, -1), XY(0, 1), XY(0, 2));
+  static readonly XY[][] iR = { iR0, iR1, iR0, iR1 };
+  static readonly XY[]
+    oR0 = XYs(XY(1, 0), XY(0, 1), XY(1, 1));
+  static readonly XY[][] oR = { oR0, oR0, oR0, oR0 };
+  static readonly XY[]
+    sR0 = XYs(XY(-1, 0), XY(1, 1), XY(0, 1)),
+    sR1 = XYs(XY(1, -1), XY(1, 0), XY(0, 1));
+  static readonly XY[][] sR = { sR0, sR1, sR0, sR1 };
+  static readonly XY[]
+    zR0 = XYs(XY(1, 0), XY(-1, 1), XY(0, 1)),
+    zR1 = XYs(XY(0, -1), XY(1, 0), XY(1, 1));
+  static readonly XY[][] zR = { zR0, zR1, zR0, zR1 };
   static readonly XY[][] jR = new XY[][] {
     XYs(XY(-1, 0), XY(1, 0), XY(-1, 1)),
     XYs(XY(0, -1), XY(0, 1), XY(1, 1)),
@@ -62,14 +62,6 @@ public class Blocks : MonoBehaviour {
   static readonly XY[][][] rotations = new XY[][][] {
     emptyR, wallR, iR, oR, sR, zR, jR, lR, tR
   };
-  internal static void ResetRotate(Status s) {
-    s.rotate = 0;
-  }
-  internal static void Rotate(Status s) {
-    int last = rotations[s.id].Length - 1;
-    if (last == s.rotate) s.rotate = 0;
-    else s.rotate++;
-  }
   internal static XY[] Relatives(Status s) {
     XY[][] r = rotations[s.id];
     return r[s.rotate];

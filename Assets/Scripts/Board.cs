@@ -51,7 +51,7 @@ public class Board : MonoBehaviour {
   void Insert() {
     s.XY(5, 20); // first place
     if (s.id == Blocks.i) s.y++;
-    Blocks.ResetRotate(s);
+    s.ResetRotate();
     insert = true;
     //-> check collision
     XY[] r = Blocks.Relatives(s);
@@ -105,7 +105,7 @@ public class Board : MonoBehaviour {
     if (s.id == Blocks.o) return; // none
     Hide();
     int cr = s.rotate;
-    Blocks.Rotate(s);
+    s.Rotate();
     XY[] r = Blocks.Relatives(s);
     if (!IsEmpty(s.x, s.y, r)) {
       s.rotate = cr; // rollback

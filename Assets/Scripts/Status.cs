@@ -7,4 +7,11 @@ public class Status {
   internal void XY(int x, int y) {
     this.x = x; this.y = y;
   }
+  internal void ResetRotate() {
+    rotate = 0;
+  }
+  internal void Rotate() {
+    if (rotate == 3) ResetRotate();
+    else rotate++;
+  }
 }

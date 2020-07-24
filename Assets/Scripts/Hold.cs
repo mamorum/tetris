@@ -39,7 +39,7 @@ public class Hold {
     if (s.id == Blocks.i) s.XY(1, 1);
     else s.XY(2, 0);
     cells[s.x, s.y].Color(s);
-    Blocks.ResetRotate(s);
+    s.ResetRotate();
     XY[] r = Blocks.Relatives(s);
     int rx, ry;
     for (int j = 0; j < r.Length; j++) {
