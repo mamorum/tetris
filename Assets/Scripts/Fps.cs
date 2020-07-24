@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class Fps : MonoBehaviour {
   public Text txt;
-  void Start() {
+  internal void Init() {
     Application.targetFrameRate = 60;
     gameObject.SetActive(true);
   }
