@@ -3,9 +3,9 @@ Unity 2D で制作したテトリスです。
 
 
 ## 注意事項（Caution）
-このリポジトリの資源を元に、ゲームを実行できる形にして公開しないでください。EXE の配布や、WebGL での公開などはしないでください。開発者個人で利用して頂くようお願いします。
+このリポジトリの資源を元に、ゲームを実行できる形にして公開しないでください。EXE の配布や、WebGL での公開などはしないでください。個人で利用するだけにしてください。
 
-Please do not publish the game in a runnable form based on the resources in this repository. Please do not distribute EXE, publish in WebGL, and so on. Please use it as an individual developer.
+Please do not publish the game in a runnable form based on the resources in this repository. Please do not distribute EXE, publish in WebGL, and so on. Please use it only for personal use.
 
 
 ## 画面イメージ
